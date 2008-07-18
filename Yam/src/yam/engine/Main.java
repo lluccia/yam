@@ -20,7 +20,7 @@ public class Main {
         Jogada jogada=new Jogada();
 
         jogada.jogarDados();
-        //System.out.println( jogada.getdados(1));
+        
         System.exit(0);
     }
 

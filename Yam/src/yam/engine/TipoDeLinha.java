@@ -84,8 +84,10 @@ public enum TipoDeLinha {
     // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
     // #[regen=yes,id=DCE.A588D964-2092-C359-8474-8572C26BB423]
     // </editor-fold> 
-    yam;
+    yam,
 
-
+    terceiroTotal,
+    
+    segundoEterceiroTotais;
 }
 

@@ -9,19 +9,10 @@ import java.util.Iterator;
 ////////////// </editor-fold> 
 public class Coluna {
 
-    // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-    // #[regen=yes,id=DCE.E1C0966D-3A50-2881-322B-1BCCC5EFE70E]
-    // </editor-fold> 
     private ArrayList<Linha> linhas;
-
-    // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-    // #[regen=yes,id=DCE.4C4B2E6F-8950-F2DD-FFA5-89BFCC66B031]
-    // </editor-fold> 
+    
     private TipoDeColuna tipoDeColuna;
    
-    // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-    // #[regen=yes,id=DCE.449188DE-72E9-948D-2EE8-A6FE47855EAF]
-    // </editor-fold> 
     public Coluna (TipoDeColuna tipo) {
         this.setTipoDeColuna(tipo);
         this.linhas=new ArrayList<Linha>(16);
@@ -36,13 +27,14 @@ public class Coluna {
      * 
      * @param linha tipo da linha em que os pontos serão marcados.
      * @param pontos quantidade de pontos a ser marcado.
-     * @return true - quando for possivel marcar pontos na linha 
-     * ou false - quando não for possível.
+     * @return <b>true</b>: quando for possível marcar pontos ou riscar a linha <br/>
+     * <b>false</b>: quando não for possível
      */
     public boolean marcaPontos (TipoDeLinha linha,int pontos) {
         if ( this.linhas.get(linha.ordinal()).getMarcavel() ) { 
             this.linhas.get(linha.ordinal()).setPontos(pontos);
             this.linhas.get(linha.ordinal()).setMarcada(true);
+            this.sumarizaTotais();
             return true;
         }
         else { 
@@ -407,5 +399,55 @@ public class Coluna {
     public void setLinhas (ArrayList<Linha> val) {
         this.linhas = val;        
     }
+    
+    public boolean colunaCheia () {
+        //inicializa variáveis (obs.: se a coluna for do tipo Seco, sempre pode riscar)
+        Iterator<Linha> itr = this.linhas.iterator();
+        
+        boolean cheia=true;
+        
+        while (itr.hasNext()) {
+            Linha linhaAtual = itr.next();
+            if (!linhaAtual.getMarcada() & !linhaAtual.getRiscada()) {
+                cheia=false;
+                break;
+            }
+        }
+        
+        return cheia;
+    }
+    
+    public int getPontos(TipoDeLinha linha) {
+        return linhas.get(linha.ordinal()).getPontos();    
+    }
+    
+    public void setPontos(TipoDeLinha linha,int pontos) {
+        this.linhas.get(linha.ordinal()).setPontos(pontos);    
+    }
+    
+    private void sumarizaTotais () {
+        int temp1=0,temp2=0;
+        for(int i=TipoDeLinha.um.ordinal();i<=TipoDeLinha.seis.ordinal();i++) {
+            temp1+=linhas.get(i).getPontos();
+        }
+        linhas.get(TipoDeLinha.primeiroTotal.ordinal()).setPontos(temp1);
+        
+        //verifica se possui pontos suficientes para bonus
+        if (temp1 >= 60) { 
+            linhas.get(TipoDeLinha.bonus.ordinal()).setPontos(30);
+        } 
+        else {
+            linhas.get(TipoDeLinha.bonus.ordinal()).setPontos(0);
+        }
+                
+        temp1+=linhas.get(TipoDeLinha.bonus.ordinal()).getPontos();
+        linhas.get(TipoDeLinha.segundoTotal.ordinal()).setPontos(temp1);
+        
+        for(int i=TipoDeLinha.quadra.ordinal();i<=TipoDeLinha.yam.ordinal();i++) {
+            temp2+=linhas.get(i).getPontos();
+        }
+        linhas.get(TipoDeLinha.terceiroTotal.ordinal()).setPontos(temp2);
 
+        linhas.get(TipoDeLinha.segundoEterceiroTotais.ordinal()).setPontos(temp1+temp2);
+    }
 }

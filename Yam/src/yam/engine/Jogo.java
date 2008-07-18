@@ -12,11 +12,16 @@ public class Jogo {
     // #[regen=yes,id=DCE.2A00FC93-DFE1-99D9-E3C3-8872E268BA78]
     // </editor-fold> 
     private ArrayList<Jogador> jogadores;
+    
+    private int jogadorAtual = 0;
+    
+    private int quantJogadores;
 
     // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
     // #[regen=yes,id=DCE.98A5B37A-F1A8-A8C4-AD68-417204A9EE0A]
     // </editor-fold> 
     public Jogo (int qtdJogadores, String[] nomes) {
+        this.quantJogadores=qtdJogadores;
         for (int i=0; i<qtdJogadores; i++) {
             this.jogadores.add(new Jogador(nomes[i]));
         }
@@ -36,5 +41,11 @@ public class Jogo {
         this.jogadores = val;
     }
 
+    public void proximoJogador() {
+        this.jogadorAtual = (this.jogadorAtual + 1) % this.quantJogadores;
+    }
+    
+    
+    
 }
 
