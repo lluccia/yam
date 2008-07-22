@@ -4,23 +4,14 @@ import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.Random;
 
-// <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-// #[regen=yes,id=DCE.A9FAD5C8-7A2D-7DB5-2BA8-5B555F269D84]
-// </editor-fold> 
 public class Cartela {
 
-    // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-    // #[regen=yes,id=DCE.04A35566-5E09-85A7-23CE-5E0A461E88BF]
-    // </editor-fold> 
     private ArrayList<Coluna> colunas;
 
     private int totalDePontos;
 
-    // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-    // #[regen=yes,id=DCE.56946E82-7EA7-4615-5D5F-0465E07D6051]
-    // </editor-fold> 
     public Cartela () {
-        this.colunas=new ArrayList<Coluna>(4);
+        this.colunas=new ArrayList<Coluna>();
         this.colunas.add(new Coluna(TipoDeColuna.desce));
         this.colunas.add(new Coluna(TipoDeColuna.sobe));
         this.colunas.add(new Coluna(TipoDeColuna.desordem));
@@ -28,16 +19,10 @@ public class Cartela {
         this.setTotalDePontos(0);
     }
 
-    // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-    // #[regen=yes,regenBody=yes,id=DCE.4C884A24-7123-7966-845E-E33BFD7D417C]
-    // </editor-fold> 
     public ArrayList<Coluna> getColunas () {
         return colunas;
     }
 
-    // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-    // #[regen=yes,regenBody=yes,id=DCE.C7D6DCDB-51C1-0743-4FE3-243F64663316]
-    // </editor-fold> 
     public void setColunas (ArrayList<Coluna> val) {
         this.colunas = val;
     }
@@ -227,4 +212,3 @@ public class Cartela {
         }
     }
 }
-

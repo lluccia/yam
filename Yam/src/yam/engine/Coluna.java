@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Iterator;
 
-////////////// <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-////////////// #[regen=yes,id=DCE.C7291326-29DF-5DE4-E24B-7B9C13E994FE]
-////////////// </editor-fold> 
 public class Coluna {
 
     private ArrayList<Linha> linhas;
@@ -15,7 +12,7 @@ public class Coluna {
    
     public Coluna (TipoDeColuna tipo) {
         this.setTipoDeColuna(tipo);
-        this.linhas=new ArrayList<Linha>(16);
+        this.linhas=new ArrayList<Linha>();
         for (TipoDeLinha tipoDeLinha: EnumSet.allOf(TipoDeLinha.class)) {
             linhas.add(new Linha(tipoDeLinha));
         }
@@ -372,30 +369,18 @@ public class Coluna {
         }
     }
     
-    // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-    // #[regen=yes,regenBody=yes,id=DCE.BCFA8715-96D6-E0CA-59D9-BA906D12228E]
-    // </editor-fold> 
     public TipoDeColuna getTipoDeColuna () {
         return tipoDeColuna;
     }
 
-    // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-    // #[regen=yes,regenBody=yes,id=DCE.B0561E6C-84E1-3F9A-5C11-78FE742C7B2A]
-    // </editor-fold> 
     public void setTipoDeColuna (TipoDeColuna val) {
         this.tipoDeColuna = val;
     }
     
-    // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-    // #[regen=yes,regenBody=yes,id=DCE.F26779FA-2545-51EF-A34A-4F550E3C9BA7]
-    // </editor-fold> 
     public ArrayList<Linha> getLinhas () {
         return linhas;
     }
 
-    // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-    // #[regen=yes,regenBody=yes,id=DCE.01A3F129-E41A-B761-8206-48A44B34B845]
-    // </editor-fold> 
     public void setLinhas (ArrayList<Linha> val) {
         this.linhas = val;        
     }

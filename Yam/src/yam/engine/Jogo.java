@@ -1,51 +1,56 @@
 package yam.engine;
 
 
-import java.util.ArrayList; 
+import java.util.ArrayList;
 
-// <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-// #[regen=yes,id=DCE.C867E980-B145-08E2-09C3-AD45E7C8C364]
-// </editor-fold> 
 public class Jogo {
 
-    // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-    // #[regen=yes,id=DCE.2A00FC93-DFE1-99D9-E3C3-8872E268BA78]
-    // </editor-fold> 
+    public StatusDoJogo statusDoJogo;
+    
     private ArrayList<Jogador> jogadores;
     
     private int jogadorAtual = 0;
     
     private int quantJogadores;
 
-    // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-    // #[regen=yes,id=DCE.98A5B37A-F1A8-A8C4-AD68-417204A9EE0A]
-    // </editor-fold> 
-    public Jogo (int qtdJogadores, String[] nomes) {
-        this.quantJogadores=qtdJogadores;
-        for (int i=0; i<qtdJogadores; i++) {
-            this.jogadores.add(new Jogador(nomes[i]));
-        }
+    public Jogo (String[] nomes) {
+        this.statusDoJogo = StatusDoJogo.inicializacao;
+	this.quantJogadores = nomes.length;
+	this.jogadores = new ArrayList<Jogador>();
+	for (String nom: nomes) {
+	    this.jogadores.add(new Jogador(nom));
+	}
     }
 
-    // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-    // #[regen=yes,regenBody=yes,id=DCE.9030280C-1DCD-21B5-A9AE-7DE2B42FB560]
-    // </editor-fold> 
+    public void iniciarJogo() {
+	this.statusDoJogo = StatusDoJogo.emAndamento;
+	
+    }
+    
+    public void finalizarJogo() {
+	this.statusDoJogo = StatusDoJogo.finalizacao;
+	
+    }
+    
+    public StatusDoJogo getStatusDoJogo() {
+	return statusDoJogo;
+    }
+
+    public void setStatusDoJogo(StatusDoJogo statusDoJogo) {
+	this.statusDoJogo = statusDoJogo;
+    }
+    
     public ArrayList<Jogador> getJogadores () {
         return jogadores;
     }
 
-    // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-    // #[regen=yes,regenBody=yes,id=DCE.BC0E0D02-A9BB-6EFC-CA9F-32231846FB00]
-    // </editor-fold> 
     public void setJogadores (ArrayList<Jogador> val) {
         this.jogadores = val;
     }
 
     public void proximoJogador() {
         this.jogadorAtual = (this.jogadorAtual + 1) % this.quantJogadores;
-    }
-    
-    
+    } 
     
 }
 
