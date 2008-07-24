@@ -52,7 +52,11 @@ public class Linha {
     public int getPontos () {
         return pontos;
     }
-
+    
+    public StatusDaLinha getStatus () {
+        return statusDaLinha;
+    }
+    
     public void setPontos (int val) {
         this.pontos = val;
     }
@@ -67,6 +71,7 @@ public class Linha {
 
     public Linha (TipoDeLinha tipo) {
         this.setTipoDeLinha(tipo);
+	this.setStatusDaLinha(StatusDaLinha.livre);
         this.setPontos(0);
         this.setMarcada(false);
         this.setMarcavel(false);

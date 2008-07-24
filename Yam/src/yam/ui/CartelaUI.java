@@ -6,22 +6,32 @@
 package yam.ui;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import javax.imageio.ImageIO;
+import javax.swing.*;
+import yam.engine.*;
 
 /**
  *
  * @author leandro.c.de.luccia
  */
-public class CartelaUI {
+public class CartelaUI extends JPanel{
     
     private int posX,posY;
     
+    private StatusDaLinha[][] statusDasLinhas;
+    
+    private int[][] valoresDasLinhas;
     
     public CartelaUI(int posX,int posY) {
 	this.posX=posX;
 	this.posY=posY;
+	this.statusDasLinhas=new StatusDaLinha[4][19];
+	this.valoresDasLinhas=new int[4][19];
+	
+	for (int i=0;i<4;i++) {
+	    for (int j=0;j<19;j++) {
+		statusDasLinhas[i][j]=StatusDaLinha.livre;
+	    }
+	}
 	
     }
     
@@ -29,12 +39,7 @@ public class CartelaUI {
 	int tamCelX=60;
 	int tamCelY=27;
 	boolean raised;
-	String[] labelsX={
-	    "^",
-	    "v",
-	    "D",
-	    "S",
-	};
+	String[] labelsX={ "▼", "▲", "D", "S" };
 	String[] labelsY={
 	    "1",
 	    "2",
@@ -55,7 +60,7 @@ public class CartelaUI {
 	    "3ºtot",
 	    "2º+3º"
 	};
-	g.setFont(new Font("Courier", Font.BOLD, 16));
+	g.setFont(new Font("Courier New", Font.BOLD, 16));
 	
 	for (int i=0;i<5;i++){
 	    for (int j=0;j<20;j++){
@@ -70,28 +75,56 @@ public class CartelaUI {
 			raised=false;
 		    }
 		    else{
-			g.setColor(Color.white);
+			if (i!=0 & j!=0 & j<19){
+			    switch (statusDasLinhas[i-1][j-1]) {
+				case livre:
+				    g.setColor(Color.white);    
+				    break;
+				case marcavel:
+				    g.setColor(Color.green);    
+				    break;
+				case riscavel:
+				    g.setColor(Color.red);    
+				    break;
+			    }
+			}
 			raised=true;
 		    }
 		}
 		if (!(i==0 & j==0) & j<19) {
 		    g.fill3DRect(posX+i*tamCelX, posY+j*tamCelY, tamCelX, tamCelY, raised);
+//		    g.fillRect(posX+i*tamCelX, posY+j*tamCelY, tamCelX, tamCelY);
 		}
 		else {
 		    if (j==19 & i==3) {
 			g.fill3DRect(posX+i*tamCelX, posY+j*tamCelY, tamCelX*2, tamCelY, raised);
+//			g.fillRect(posX+i*tamCelX, posY+j*tamCelY, tamCelX*2, tamCelY);
 		    }
 		}
+		
+		//escreve labels
 		if (i==0 & j > 0 & j < 19) {
 		    int lblPosX = posX+i*tamCelX+(tamCelX/2) - labelsY[j-1].length()*5;
 		    g.setColor(Color.black);
 		    g.drawChars(labelsY[j-1].toCharArray(), 0,labelsY[j-1].length(),lblPosX, posY+j*tamCelY+tamCelY-10);
-		}   
+		}
+		if (i > 0 & j == 0 ) {
+		    int lblPosY = posY+(tamCelY/2) + 5;
+		    g.setColor(Color.black);
+		    g.drawChars(labelsX[i-1].toCharArray(), 0,labelsX[i-1].length(),posX+i*tamCelX+tamCelX/2-5, lblPosY );
+		}
+		
+		//escreve pontos
+		// TODO
+		
 	    }
 	}
-	
-	
-	
     }	 
+    
+    public void sincronizar(StatusDaLinha[][] status, int[][] pontos){
+	this.statusDasLinhas = status;
+	this.valoresDasLinhas = pontos;
+    }
+    
 
 }

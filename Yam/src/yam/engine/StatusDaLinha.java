@@ -8,7 +8,10 @@ public enum StatusDaLinha {
 
     riscada,
 
-    livre;
+    livre,
 
+    marcavel,
+	    
+    riscavel;
 }
 

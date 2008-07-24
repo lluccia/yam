@@ -67,7 +67,7 @@ public class Jogada {
         setSeqJogada(0);
     }
     
-    public void jogarDados () throws CloneNotSupportedException {
+    public void jogarDados () {
         Iterator<Dado> itr = dados.iterator();
         int tmpTotalNosDados=0;
         while (itr.hasNext()) {
@@ -482,6 +482,22 @@ public class Jogada {
         return dados.get(dado).getValor();
     }
     
+    public int[] getValoresDados() {
+	int[] ret = new int[5];
+	for (int i=0;i<5;i++){
+	    ret[i]=this.dados.get(i).getValor();
+	}
+	return ret;
+    }
+    
+    public boolean[] getMarcadosDados() {
+	boolean[] ret = new boolean[5];
+	for (int i=0;i<5;i++){
+	    ret[i]=this.dados.get(i).getMarcado();
+	}
+	return ret;
+    }
+    
     public int getPontosComb(TipoDeLinha linha) {
         switch (linha) {
             case um:
@@ -525,5 +541,63 @@ public class Jogada {
 	    retString=retString.concat(" ");
 	}
 	return retString;
+    }
+    
+    public boolean verificaCombinacao(TipoDeLinha tpLinha) {
+	switch (tpLinha) {
+	    case um:
+		return getCombUm();
+	    case dois:
+		return getCombDois();
+	    case tres:
+		return getCombTres();
+	    case quatro:
+		return getCombQuatro();
+	    case cinco:
+		return getCombCinco();
+	    case seis:
+		return getCombSeis();
+	    case quadra:
+		return getCombQuadra();
+	    case full:
+		return getCombFull();
+	    case seqMinima:
+		return getCombSeqMinima();
+	    case seqMaxima:
+		return getCombSeqMaxima();
+	    case yam:
+		return getCombYam();
+	    default:
+		return false;
+	}
+    }
+		
+	public int verificaPontosCombinacao(TipoDeLinha tpLinha) {
+	switch (tpLinha) {
+	    case um:
+		return getPontosCombUm();
+	    case dois:
+		return getPontosCombDois();
+	    case tres:
+		return getPontosCombTres();
+	    case quatro:
+		return getPontosCombQuatro();
+	    case cinco:
+		return getPontosCombCinco();
+	    case seis:
+		return getPontosCombSeis();
+	    case quadra:
+		return getPontosCombQuadra();
+	    case full:
+		return getPontosCombFull();
+	    case seqMinima:
+		return getPontosCombSeqMinima();
+	    case seqMaxima:
+		return getPontosCombSeqMaxima();
+	    case yam:
+		return getPontosCombYam();
+	    default:
+		return 0;
+	}
     }
 }

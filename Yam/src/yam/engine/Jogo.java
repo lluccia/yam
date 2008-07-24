@@ -9,6 +9,12 @@ public class Jogo {
     
     private ArrayList<Jogador> jogadores;
     
+    private Jogada jogada;
+
+    public Jogada getJogada() {
+	return jogada;
+    }
+    
     private int jogadorAtual = 0;
     
     private int quantJogadores;
@@ -17,6 +23,8 @@ public class Jogo {
         this.statusDoJogo = StatusDoJogo.inicializacao;
 	this.quantJogadores = nomes.length;
 	this.jogadores = new ArrayList<Jogador>();
+	this.jogada = new Jogada();
+	
 	for (String nom: nomes) {
 	    this.jogadores.add(new Jogador(nom));
 	}
@@ -44,13 +52,30 @@ public class Jogo {
         return jogadores;
     }
 
+    public Jogador getJogadorAtual () {
+        return jogadores.get(jogadorAtual);
+    }
+    
     public void setJogadores (ArrayList<Jogador> val) {
         this.jogadores = val;
     }
 
     public void proximoJogador() {
         this.jogadorAtual = (this.jogadorAtual + 1) % this.quantJogadores;
-    } 
+    }
     
+    public void jogarDados(){
+	this.jogada.jogarDados();
+	this.getJogadorAtual().getCartela().verificarMarcacoes(jogada);
+    }
+    
+    public void marcarPontos(TipoDeColuna tpColuna,TipoDeLinha tpLinha){
+	this.jogadores.get(jogadorAtual).getCartela().marcaPontos(tpColuna, tpLinha, jogada);
+	proximoJogador();
+    }
+    
+    public void marcarDado(int posicao) {
+	this.jogada.marcarDado(posicao);
+    }
 }
 

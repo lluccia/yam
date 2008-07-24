@@ -30,7 +30,7 @@ public class Cartela {
     public int getTotalDePontos() {
         return totalDePontos;
     }
-
+    
     public void setTotalDePontos(int totalDePontos) {
         this.totalDePontos = totalDePontos;
     }
@@ -39,12 +39,16 @@ public class Cartela {
         return colunas.get(coluna.ordinal()).getPontos(linha);
     }
     
+    public StatusDaLinha getStatus(TipoDeColuna coluna,TipoDeLinha linha) {
+        return colunas.get(coluna.ordinal()).getStatus(linha);
+    }
+    
     public void setPontos(TipoDeColuna coluna,TipoDeLinha linha,int pontos) {
         this.colunas.get(coluna.ordinal()).setPontos(linha,pontos);
     }
 
-    public boolean marcaPontos (TipoDeColuna coluna, TipoDeLinha linha,int pontos) {
-        if ( colunas.get(coluna.ordinal()).marcaPontos(linha, pontos) ) { 
+    public boolean marcaPontos (TipoDeColuna coluna, TipoDeLinha linha, Jogada jog) {
+        if ( colunas.get(coluna.ordinal()).marcaPontos(linha, jog) ) { 
             sumarizaTotais();
             return true;
         }
@@ -88,127 +92,21 @@ public class Cartela {
         return retArray;
     }
     
-    public boolean[][] getArrMarcaveis() {
-        boolean[][] retArray = new boolean[colunas.size()][colunas.get(0).getLinhas().size()];
+    public StatusDaLinha[][] getArrStatus() {
+        StatusDaLinha[][] retArray = new StatusDaLinha[colunas.size()][colunas.get(0).getLinhas().size()];
         
-        Iterator<Coluna> itrColunas = colunas.iterator();
-        
-        int intColunaAtual=0;
-        
-        while (itrColunas.hasNext()) {
-            Coluna colunaAtual = itrColunas.next();
-            int intLinhaAtual=0;
-            
-            Iterator<Linha> itrLinhas = colunaAtual.getLinhas().iterator();
-            while (itrLinhas.hasNext()) {
-                Linha linhaAtual = itrLinhas.next();
-                
-                retArray[intColunaAtual][intLinhaAtual]=linhaAtual.getMarcavel();
-                intLinhaAtual+=1;
+        for (TipoDeColuna col: TipoDeColuna.values()) {
+            for (TipoDeLinha lin: TipoDeLinha.values()) {
+                retArray[col.ordinal()][lin.ordinal()]=getStatus(col,lin);
             }
-            intColunaAtual+=1;
         }
-        
+       
         return retArray;
     }
     
-    public boolean[][] getArrMarcadas() {
-        boolean[][] retArray = new boolean[colunas.size()][colunas.get(0).getLinhas().size()];
-        
-        Iterator<Coluna> itrColunas = colunas.iterator();
-        
-        int intColunaAtual=0;
-        
-        while (itrColunas.hasNext()) {
-            Coluna colunaAtual = itrColunas.next();
-            int intLinhaAtual=0;
-            
-            Iterator<Linha> itrLinhas = colunaAtual.getLinhas().iterator();
-            while (itrLinhas.hasNext()) {
-                Linha linhaAtual = itrLinhas.next();
-                
-                retArray[intColunaAtual][intLinhaAtual]=linhaAtual.getMarcada();
-                intLinhaAtual+=1;
-            }
-            intColunaAtual+=1;
-        }
-        
-        return retArray;
-    }
-    
-    public boolean[][] getArrRiscaveis() {
-        boolean[][] retArray = new boolean[colunas.size()][colunas.get(0).getLinhas().size()];
-        
-        Iterator<Coluna> itrColunas = colunas.iterator();
-        
-        int intColunaAtual=0;
-        
-        while (itrColunas.hasNext()) {
-            Coluna colunaAtual = itrColunas.next();
-            int intLinhaAtual=0;
-            
-            Iterator<Linha> itrLinhas = colunaAtual.getLinhas().iterator();
-            while (itrLinhas.hasNext()) {
-                Linha linhaAtual = itrLinhas.next();
-                
-                retArray[intColunaAtual][intLinhaAtual]=linhaAtual.getRiscavel();
-                intLinhaAtual+=1;
-            }
-            intColunaAtual+=1;
-        }
-        
-        return retArray;
-    }
-    
-    public boolean[][] getArrRiscadas() {
-        boolean[][] retArray = new boolean[colunas.size()][colunas.get(0).getLinhas().size()];
-        
-        Iterator<Coluna> itrColunas = colunas.iterator();
-        
-        int intColunaAtual=0;
-        
-        while (itrColunas.hasNext()) {
-            Coluna colunaAtual = itrColunas.next();
-            int intLinhaAtual=0;
-            
-            Iterator<Linha> itrLinhas = colunaAtual.getLinhas().iterator();
-            while (itrLinhas.hasNext()) {
-                Linha linhaAtual = itrLinhas.next();
-                
-                retArray[intColunaAtual][intLinhaAtual]=linhaAtual.getRiscada();
-                intLinhaAtual+=1;
-            }
-            intColunaAtual+=1;
-        }
-        
-        return retArray;
-    }
-    
-    // * método utilizado para teste
-    public void randomFillPontos() {
-        
-        Random geradorRandomico = new Random();
-        
-        Iterator<Coluna> itrColunas = colunas.iterator();
-        
-        while (itrColunas.hasNext()) {
-            Coluna colunaAtual = itrColunas.next();
-            Iterator<Linha> itrLinhas = colunaAtual.getLinhas().iterator();
-            while (itrLinhas.hasNext()) {
-                Linha linhaAtual = itrLinhas.next();
-                linhaAtual.setMarcavel(true);
-            }
-        }
-        
-        itrColunas = colunas.iterator();
-        
-        while (itrColunas.hasNext()) {
-            Coluna colunaAtual = itrColunas.next();
-            Iterator<Linha> itrLinhas = colunaAtual.getLinhas().iterator();
-            while (itrLinhas.hasNext()) {
-                Linha linhaAtual = itrLinhas.next();
-                marcaPontos(colunaAtual.getTipoDeColuna(),linhaAtual.getTipoDeLinha(),geradorRandomico.nextInt(6));
-            }
-        }
+    public void verificarMarcacoes(Jogada jogada) {
+        for (Coluna c: colunas) {
+	    c.verificarMarcacoes(jogada);
+	}
     }
 }

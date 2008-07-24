@@ -2,7 +2,6 @@ package yam.engine;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.Iterator;
 
 public class Coluna {
 
@@ -27,22 +26,26 @@ public class Coluna {
      * @return <b>true</b>: quando for possível marcar pontos ou riscar a linha <br/>
      * <b>false</b>: quando não for possível
      */
-    public boolean marcaPontos (TipoDeLinha linha,int pontos) {
-        if ( this.linhas.get(linha.ordinal()).getMarcavel() ) { 
-            this.linhas.get(linha.ordinal()).setPontos(pontos);
-            this.linhas.get(linha.ordinal()).setMarcada(true);
-            this.sumarizaTotais();
-            return true;
-        }
-        else { 
-            if (this.linhas.get(linha.ordinal()).getRiscavel()) {
-                this.linhas.get(linha.ordinal()).setRiscada(true);
+    public boolean marcaPontos (TipoDeLinha tpLinha, Jogada jog) {
+        switch (linhas.get(tpLinha.ordinal()).getStatusDaLinha()) {
+	    case marcavel:
+		int pontos;
+		if (tpLinha==TipoDeLinha.minDePontos | tpLinha==TipoDeLinha.maxDePontos) {
+		    pontos=jog.getTotalNosDados();
+		}
+		else {
+		    pontos=jog.getPontosComb(tpLinha);
+		}
+		linhas.get(tpLinha.ordinal()).setPontos(pontos);
+		linhas.get(tpLinha.ordinal()).setStatusDaLinha(StatusDaLinha.marcada);
+		sumarizaTotais();
+		return true;
+	    case riscavel:
+		linhas.get(tpLinha.ordinal()).setStatusDaLinha(StatusDaLinha.riscada);
                 return true;
-            }
-            else { 
-                return false; 
-            }
-        }
+	    default:
+		return false;
+	}
     }
 
     /** 
@@ -51,322 +54,70 @@ public class Coluna {
      * @param jogada jogada que será utilizada para análise das marcações possíveis.
      */
     public void verificarMarcacoes (Jogada jogada) {
-        //inicializa variáveis (obs.: se a coluna for do tipo Seco, sempre pode riscar)
-        Iterator<Linha> itr = this.linhas.iterator();
-        while (itr.hasNext()) {
-            Linha linhaAtual = itr.next();
-            linhaAtual.setMarcavel(false);            
-            if (this.tipoDeColuna.equals(TipoDeColuna.seco)) {
-                linhaAtual.setRiscavel(true);
-            }
-            else {
-                linhaAtual.setRiscavel(false);
-            }
-        }
-        
-        if (jogada.getCombUm()) {
-            switch (this.getTipoDeColuna()) {
-                case desce:
-                    if ( linhas.get(TipoDeLinha.um.ordinal()).getMarcada()==false )
-                        linhas.get(TipoDeLinha.um.ordinal()).setMarcavel(true);
-                    break;
-                case sobe:
-                    if ( linhas.get(TipoDeLinha.um.ordinal()).getMarcada()==false & 
-                          linhas.get(TipoDeLinha.dois.ordinal()).getMarcada()==true  )
-                        linhas.get(TipoDeLinha.um.ordinal()).setMarcavel(true);
-                    break;
-                case desordem:
-                    if ( linhas.get(TipoDeLinha.um.ordinal()).getMarcada()==false )
-                        linhas.get(TipoDeLinha.um.ordinal()).setMarcavel(true);
-                    break;
-                case seco:
-                    if ( linhas.get(TipoDeLinha.um.ordinal()).getMarcada()==false & 
-                            jogada.getSeqJogada()==1)
-                        linhas.get(TipoDeLinha.um.ordinal()).setMarcavel(true);
-                    break;
-            }
-        }
-        if (jogada.getCombDois()) {
-            switch (this.getTipoDeColuna()) {
-                 case desce:
-                    if ( linhas.get(TipoDeLinha.dois.ordinal()).getMarcada()==false &
-                            linhas.get(TipoDeLinha.um.ordinal()).getMarcada()==true)
-                        linhas.get(TipoDeLinha.dois.ordinal()).setMarcavel(true);
-                    break;
-                case sobe:
-                    if ( linhas.get(TipoDeLinha.dois.ordinal()).getMarcada()==false & 
-                          linhas.get(TipoDeLinha.tres.ordinal()).getMarcada()==true  )
-                        linhas.get(TipoDeLinha.dois.ordinal()).setMarcavel(true);
-                    break;
-                case desordem:
-                    if ( linhas.get(TipoDeLinha.dois.ordinal()).getMarcada()==false )
-                        linhas.get(TipoDeLinha.dois.ordinal()).setMarcavel(true);
-                    break;
-                case seco:
-                    if ( linhas.get(TipoDeLinha.dois.ordinal()).getMarcada()==false & 
-                            jogada.getSeqJogada()==1)
-                        linhas.get(TipoDeLinha.dois.ordinal()).setMarcavel(true);
-                    break;
-            }
-        }
-        if (jogada.getCombTres()) {
-            switch (this.getTipoDeColuna()) {
-                 case desce:
-                    if ( linhas.get(TipoDeLinha.tres.ordinal()).getMarcada()==false &
-                            linhas.get(TipoDeLinha.dois.ordinal()).getMarcada()==true)
-                        linhas.get(TipoDeLinha.tres.ordinal()).setMarcavel(true);
-                    break;
-                case sobe:
-                    if ( linhas.get(TipoDeLinha.tres.ordinal()).getMarcada()==false & 
-                          linhas.get(TipoDeLinha.quatro.ordinal()).getMarcada()==true  )
-                        linhas.get(TipoDeLinha.tres.ordinal()).setMarcavel(true);
-                    break;
-                case desordem:
-                    if ( linhas.get(TipoDeLinha.tres.ordinal()).getMarcada()==false )
-                        linhas.get(TipoDeLinha.tres.ordinal()).setMarcavel(true);
-                    break;
-                case seco:
-                    if ( linhas.get(TipoDeLinha.tres.ordinal()).getMarcada()==false & 
-                            jogada.getSeqJogada()==1)
-                        linhas.get(TipoDeLinha.tres.ordinal()).setMarcavel(true);
-                    break;
-            }
-        }
-        if (jogada.getCombQuatro()) {
-            switch (this.getTipoDeColuna()) {
-                 case desce:
-                    if ( linhas.get(TipoDeLinha.quatro.ordinal()).getMarcada()==false &
-                            linhas.get(TipoDeLinha.tres.ordinal()).getMarcada()==true)
-                        linhas.get(TipoDeLinha.quatro.ordinal()).setMarcavel(true);
-                    break;
-                case sobe:
-                    if ( linhas.get(TipoDeLinha.quatro.ordinal()).getMarcada()==false & 
-                          linhas.get(TipoDeLinha.cinco.ordinal()).getMarcada()==true  )
-                        linhas.get(TipoDeLinha.quatro.ordinal()).setMarcavel(true);
-                    break;
-                case desordem:
-                    if ( linhas.get(TipoDeLinha.quatro.ordinal()).getMarcada()==false )
-                        linhas.get(TipoDeLinha.quatro.ordinal()).setMarcavel(true);
-                    break;
-                case seco:
-                    if ( linhas.get(TipoDeLinha.quatro.ordinal()).getMarcada()==false & 
-                            jogada.getSeqJogada()==1)
-                        linhas.get(TipoDeLinha.quatro.ordinal()).setMarcavel(true);
-                    break;
-            }
-        }
-        if (jogada.getCombCinco()) {
-            switch (this.getTipoDeColuna()) {
-                 case desce:
-                    if ( linhas.get(TipoDeLinha.cinco.ordinal()).getMarcada()==false &
-                            linhas.get(TipoDeLinha.quatro.ordinal()).getMarcada()==true)
-                        linhas.get(TipoDeLinha.cinco.ordinal()).setMarcavel(true);
-                    break;
-                case sobe:
-                    if ( linhas.get(TipoDeLinha.cinco.ordinal()).getMarcada()==false & 
-                          linhas.get(TipoDeLinha.seis.ordinal()).getMarcada()==true  )
-                        linhas.get(TipoDeLinha.cinco.ordinal()).setMarcavel(true);
-                    break;
-                case desordem:
-                    if ( linhas.get(TipoDeLinha.cinco.ordinal()).getMarcada()==false )
-                        linhas.get(TipoDeLinha.cinco.ordinal()).setMarcavel(true);
-                    break;
-                case seco:
-                    if ( linhas.get(TipoDeLinha.cinco.ordinal()).getMarcada()==false & 
-                            jogada.getSeqJogada()==1)
-                        linhas.get(TipoDeLinha.cinco.ordinal()).setMarcavel(true);
-                    break;
-            }
-        }
-        if (jogada.getCombSeis()) {
-            switch (this.getTipoDeColuna()) {
-                 case desce:
-                    if ( linhas.get(TipoDeLinha.seis.ordinal()).getMarcada()==false &
-                            linhas.get(TipoDeLinha.cinco.ordinal()).getMarcada()==true)
-                        linhas.get(TipoDeLinha.seis.ordinal()).setMarcavel(true);
-                    break;
-                case sobe:
-                    if ( linhas.get(TipoDeLinha.seis.ordinal()).getMarcada()==false & 
-                          linhas.get(TipoDeLinha.quadra.ordinal()).getMarcada()==true  )
-                        linhas.get(TipoDeLinha.seis.ordinal()).setMarcavel(true);
-                    break;
-                case desordem:
-                    if ( linhas.get(TipoDeLinha.seis.ordinal()).getMarcada()==false )
-                        linhas.get(TipoDeLinha.seis.ordinal()).setMarcavel(true);
-                    break;
-                case seco:
-                    if ( linhas.get(TipoDeLinha.seis.ordinal()).getMarcada()==false & 
-                            jogada.getSeqJogada()==1)
-                        linhas.get(TipoDeLinha.seis.ordinal()).setMarcavel(true);
-                    break;
-            }
-        }
-        if (jogada.getCombQuadra()) {
-            switch (this.getTipoDeColuna()) {
-                 case desce:
-                    if ( linhas.get(TipoDeLinha.quadra.ordinal()).getMarcada()==false &
-                            linhas.get(TipoDeLinha.seis.ordinal()).getMarcada()==true)
-                        linhas.get(TipoDeLinha.quadra.ordinal()).setMarcavel(true);
-                    break;
-                case sobe:
-                    if ( linhas.get(TipoDeLinha.quadra.ordinal()).getMarcada()==false & 
-                          linhas.get(TipoDeLinha.full.ordinal()).getMarcada()==true  )
-                        linhas.get(TipoDeLinha.quadra.ordinal()).setMarcavel(true);
-                    break;
-                case desordem:
-                    if ( linhas.get(TipoDeLinha.quadra.ordinal()).getMarcada()==false )
-                        linhas.get(TipoDeLinha.quadra.ordinal()).setMarcavel(true);
-                    break;
-                case seco:
-                    if ( linhas.get(TipoDeLinha.quadra.ordinal()).getMarcada()==false & 
-                            jogada.getSeqJogada()==1)
-                        linhas.get(TipoDeLinha.quadra.ordinal()).setMarcavel(true);
-                    break;
-            }
-        }
-        if (jogada.getCombFull()) {
-            switch (this.getTipoDeColuna()) {
-                 case desce:
-                    if ( linhas.get(TipoDeLinha.full.ordinal()).getMarcada()==false &
-                            linhas.get(TipoDeLinha.quadra.ordinal()).getMarcada()==true)
-                        linhas.get(TipoDeLinha.full.ordinal()).setMarcavel(true);
-                    break;
-                case sobe:
-                    if ( linhas.get(TipoDeLinha.full.ordinal()).getMarcada()==false & 
-                          linhas.get(TipoDeLinha.seqMinima.ordinal()).getMarcada()==true  )
-                        linhas.get(TipoDeLinha.full.ordinal()).setMarcavel(true);
-                    break;
-                case desordem:
-                    if ( linhas.get(TipoDeLinha.full.ordinal()).getMarcada()==false )
-                        linhas.get(TipoDeLinha.full.ordinal()).setMarcavel(true);
-                    break;
-                case seco:
-                    if ( linhas.get(TipoDeLinha.full.ordinal()).getMarcada()==false & 
-                            jogada.getSeqJogada()==1)
-                        linhas.get(TipoDeLinha.full.ordinal()).setMarcavel(true);
-                    break;
-            }
-        }
-        if (jogada.getCombSeqMinima()) {
-            switch (this.getTipoDeColuna()) {
-                 case desce:
-                    if ( linhas.get(TipoDeLinha.seqMinima.ordinal()).getMarcada()==false &
-                            linhas.get(TipoDeLinha.full.ordinal()).getMarcada()==true)
-                        linhas.get(TipoDeLinha.seqMinima.ordinal()).setMarcavel(true);
-                    break;
-                case sobe:
-                    if ( linhas.get(TipoDeLinha.seqMinima.ordinal()).getMarcada()==false & 
-                          linhas.get(TipoDeLinha.seqMaxima.ordinal()).getMarcada()==true  )
-                        linhas.get(TipoDeLinha.seqMinima.ordinal()).setMarcavel(true);
-                    break;
-                case desordem:
-                    if ( linhas.get(TipoDeLinha.seqMinima.ordinal()).getMarcada()==false )
-                        linhas.get(TipoDeLinha.seqMinima.ordinal()).setMarcavel(true);
-                    break;
-                case seco:
-                    if ( linhas.get(TipoDeLinha.seqMinima.ordinal()).getMarcada()==false & 
-                            jogada.getSeqJogada()==1)
-                        linhas.get(TipoDeLinha.seqMinima.ordinal()).setMarcavel(true);
-                    break;
-            }
-        }
-        if (jogada.getCombSeqMaxima()) {
-            switch (this.getTipoDeColuna()) {
-                 case desce:
-                    if ( linhas.get(TipoDeLinha.seqMaxima.ordinal()).getMarcada()==false &
-                            linhas.get(TipoDeLinha.seqMinima.ordinal()).getMarcada()==true )
-                        linhas.get(TipoDeLinha.seqMaxima.ordinal()).setMarcavel(true);
-                    break;
-                case sobe:
-                    if ( linhas.get(TipoDeLinha.seqMaxima.ordinal()).getMarcada()==false & 
-                          linhas.get(TipoDeLinha.minDePontos.ordinal()).getMarcada()==true )
-                        linhas.get(TipoDeLinha.seqMaxima.ordinal()).setMarcavel(true);
-                    break;
-                case desordem:
-                    if ( linhas.get(TipoDeLinha.seqMaxima.ordinal()).getMarcada()==false )
-                        linhas.get(TipoDeLinha.seqMaxima.ordinal()).setMarcavel(true);
-                    break;
-                case seco:
-                    if ( linhas.get(TipoDeLinha.seqMaxima.ordinal()).getMarcada()==false & 
-                            jogada.getSeqJogada()==1)
-                        linhas.get(TipoDeLinha.seqMaxima.ordinal()).setMarcavel(true);
-                    break;
-            }
-        }
-        if (jogada.getCombYam()) {
-            switch (this.getTipoDeColuna()) {
-                 case desce:
-                    if ( linhas.get(TipoDeLinha.yam.ordinal()).getMarcada()==false &
-                            linhas.get(TipoDeLinha.maxDePontos.ordinal()).getMarcada()==true )
-                        linhas.get(TipoDeLinha.yam.ordinal()).setMarcavel(true);
-                    break;
-                case sobe:
-                    if ( linhas.get(TipoDeLinha.yam.ordinal()).getMarcada()==false )
-                        linhas.get(TipoDeLinha.yam.ordinal()).setMarcavel(true);
-                    break;
-                case desordem:
-                    if ( linhas.get(TipoDeLinha.yam.ordinal()).getMarcada()==false )
-                        linhas.get(TipoDeLinha.yam.ordinal()).setMarcavel(true);
-                    break;
-                case seco:
-                    if ( linhas.get(TipoDeLinha.yam.ordinal()).getMarcada()==false & 
-                            jogada.getSeqJogada()==1)
-                        linhas.get(TipoDeLinha.yam.ordinal()).setMarcavel(true);
-                    break;
-            }
-        }
-        
-        //verifica mínimo de pontos
-        if (linhas.get(TipoDeLinha.maxDePontos.ordinal()).getMarcada()==false |
-                jogada.getTotalNosDados() <  linhas.get(TipoDeLinha.maxDePontos.ordinal()).getPontos()) {
-            switch (this.getTipoDeColuna()) {
-                 case desce:
-                    if ( linhas.get(TipoDeLinha.minDePontos.ordinal()).getMarcada()==false &
-                            linhas.get(TipoDeLinha.seqMaxima.ordinal()).getMarcada()==true )
-                        linhas.get(TipoDeLinha.minDePontos.ordinal()).setMarcavel(true);
-                    break;
-                case sobe:
-                    if ( linhas.get(TipoDeLinha.minDePontos.ordinal()).getMarcada()==false &
-                            linhas.get(TipoDeLinha.maxDePontos.ordinal()).getMarcada()==true)
-                        linhas.get(TipoDeLinha.minDePontos.ordinal()).setMarcavel(true);
-                    break;
-                case desordem:
-                    if ( linhas.get(TipoDeLinha.minDePontos.ordinal()).getMarcada()==false )
-                        linhas.get(TipoDeLinha.minDePontos.ordinal()).setMarcavel(true);
-                    break;
-                case seco:
-                    if ( linhas.get(TipoDeLinha.minDePontos.ordinal()).getMarcada()==false & 
-                            jogada.getSeqJogada()==1)
-                        linhas.get(TipoDeLinha.minDePontos.ordinal()).setMarcavel(true);
-                    break;
-            }
-        }
-        
-        //verifica maximo de pontos
-        if (linhas.get(TipoDeLinha.minDePontos.ordinal()).getMarcada()==false |
-                jogada.getTotalNosDados() >  linhas.get(TipoDeLinha.minDePontos.ordinal()).getPontos()) {
-            switch (this.getTipoDeColuna()) {
-                 case desce:
-                    if ( linhas.get(TipoDeLinha.maxDePontos.ordinal()).getMarcada()==false &
-                            linhas.get(TipoDeLinha.minDePontos.ordinal()).getMarcada()==true )
-                        linhas.get(TipoDeLinha.maxDePontos.ordinal()).setMarcavel(true);
-                    break;
-                case sobe:
-                    if ( linhas.get(TipoDeLinha.maxDePontos.ordinal()).getMarcada()==false &
-                            linhas.get(TipoDeLinha.yam.ordinal()).getMarcada()==true)
-                        linhas.get(TipoDeLinha.maxDePontos.ordinal()).setMarcavel(true);
-                    break;
-                case desordem:
-                    if ( linhas.get(TipoDeLinha.maxDePontos.ordinal()).getMarcada()==false )
-                        linhas.get(TipoDeLinha.maxDePontos.ordinal()).setMarcavel(true);
-                    break;
-                case seco:
-                    if ( linhas.get(TipoDeLinha.maxDePontos.ordinal()).getMarcada()==false & 
-                            jogada.getSeqJogada()==1)
-                        linhas.get(TipoDeLinha.maxDePontos.ordinal()).setMarcavel(true);
-                    break;
-            }
-        }
+	//limpa status das marcações possíveis anteriores
+	for (Linha linha: linhas) {
+	    if (linha.getStatusDaLinha() == StatusDaLinha.marcavel | 
+		    linha.getStatusDaLinha() == StatusDaLinha.riscavel ) {
+		linha.setStatusDaLinha(StatusDaLinha.livre);
+	    }
+	}
+	
+        switch (tipoDeColuna) {
+	    case desce:			
+		for (int i=0;i <= 15;i++) {
+		    if (i==6) {i=9;}
+		    if (linhas.get(i).getStatusDaLinha()==StatusDaLinha.livre) {
+			if (jogada.verificaCombinacao(linhas.get(i).getTipoDeLinha())) {
+			    linhas.get(i).setStatusDaLinha(StatusDaLinha.marcavel);
+			}
+			else {
+			    linhas.get(i).setStatusDaLinha(StatusDaLinha.riscavel);
+			}	    
+			break;
+		    }
+		}
+		break;
+	    case sobe:
+		for (int i=15;i >= 0;i++) {
+		    if (i==8) {i=5;}
+		    if (linhas.get(i).getStatusDaLinha()==StatusDaLinha.livre) {
+			if (jogada.verificaCombinacao(linhas.get(i).getTipoDeLinha())) {
+			    linhas.get(i).setStatusDaLinha(StatusDaLinha.marcavel);
+			}
+			else {
+			    linhas.get(i).setStatusDaLinha(StatusDaLinha.riscavel);
+			}
+			break;
+		    }
+		}
+		break;
+	    case desordem:
+		for (int i=0;i <= 15;i++) {
+		    if (i==6) {i=9;}
+		    if (linhas.get(i).getStatusDaLinha()==StatusDaLinha.livre) {
+			if (jogada.verificaCombinacao(linhas.get(i).getTipoDeLinha())) {
+			    linhas.get(i).setStatusDaLinha(StatusDaLinha.marcavel);
+			}
+			else {
+			    linhas.get(i).setStatusDaLinha(StatusDaLinha.riscavel);
+			}	    
+		    }
+		}
+		break;
+	    case seco:
+		for (int i=0;i <= 15;i++) {
+		    if (i==6) {i=9;}
+		    if (linhas.get(i).getStatusDaLinha()==StatusDaLinha.livre) {
+			if (jogada.getSeqJogada()==1 & jogada.verificaCombinacao(linhas.get(i).getTipoDeLinha())) {
+			    linhas.get(i).setStatusDaLinha(StatusDaLinha.marcavel);
+			}
+			else {
+			    linhas.get(i).setStatusDaLinha(StatusDaLinha.riscavel);
+			}
+		    }
+		}
+		break;
+	}
     }
     
     public TipoDeColuna getTipoDeColuna () {
@@ -386,24 +137,25 @@ public class Coluna {
     }
     
     public boolean colunaCheia () {
-        //inicializa variáveis (obs.: se a coluna for do tipo Seco, sempre pode riscar)
-        Iterator<Linha> itr = this.linhas.iterator();
-        
         boolean cheia=true;
-        
-        while (itr.hasNext()) {
-            Linha linhaAtual = itr.next();
-            if (!linhaAtual.getMarcada() & !linhaAtual.getRiscada()) {
+	
+	for (Linha linha: linhas) {
+	    if (linha.getStatusDaLinha() != StatusDaLinha.marcada &
+		    linha.getStatusDaLinha() != StatusDaLinha.riscada ) {
                 cheia=false;
                 break;
             }
-        }
-        
+	}
+	    
         return cheia;
     }
     
     public int getPontos(TipoDeLinha linha) {
         return linhas.get(linha.ordinal()).getPontos();    
+    }
+    
+    public StatusDaLinha getStatus(TipoDeLinha linha) {
+        return linhas.get(linha.ordinal()).getStatus();    
     }
     
     public void setPontos(TipoDeLinha linha,int pontos) {

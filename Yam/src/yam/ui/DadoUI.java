@@ -6,9 +6,12 @@
 package yam.ui;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.imageio.ImageIO;
+import javax.swing.JPanel;
 
 /**
  *
@@ -16,9 +19,9 @@ import javax.imageio.ImageIO;
  */
 public class DadoUI {
     
-    private static final int dimDado=100;
-    private static final int espacoEntreDados=20;
-    private static final float escalaDosDados=0.9f;
+    public static final int dimDado=100;
+    public static final int espacoEntreDados=20;
+    public static final float escalaDosDados=0.9f;
     
     private BufferedImage imgDados;
     
@@ -27,12 +30,21 @@ public class DadoUI {
     private int[] valores;
     
     private int posX,posY;
+
+    public int getPosX() {
+	return posX;
+    }
+
+    public int getPosY() {
+	return posY;
+    }
     
     public DadoUI(int posX,int posY) {
+	super();
 	this.posX=posX;
 	this.posY=posY;
-	this.marcados = new boolean[]{false,true,true,false,false};
-	this.valores = new int[]{3,3,3,4,5};
+	this.marcados = new boolean[]{false,false,false,false,false};
+	this.valores = new int[]{1,2,3,4,5};
 	
 	try {
 	    imgDados = ImageIO.read(new File("images/dados.png"));
@@ -40,6 +52,7 @@ public class DadoUI {
 	catch (IOException e) {
 	    
 	}
+	
     }
     
     public void desenhar(Graphics g) {
@@ -62,4 +75,10 @@ public class DadoUI {
 	}	
     }	 
 
+   public void sincronizar(int[] val,boolean[] mar) {
+       this.valores = val;
+       this.marcados = mar;
+   }
+
+    
 }
