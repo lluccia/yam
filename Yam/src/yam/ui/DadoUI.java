@@ -6,12 +6,9 @@
 package yam.ui;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.imageio.ImageIO;
-import javax.swing.JPanel;
 
 /**
  *
@@ -62,10 +59,7 @@ public class DadoUI {
 	    posDestY = posY;
 	    posOrigX = (valores[i]-1)*dimDado;
 	    if (marcados[i]==true) {posOrigY=100;} else {posOrigY=0;}
-	    
-	    g.setColor(Color.lightGray);
-	    g.fill3DRect(posDestX-3, posDestY-3, Math.round(dimDado*escalaDosDados+6), Math.round(dimDado*escalaDosDados+6), true);
-	    
+	     
 	    g.drawImage(imgDados, 
 		    posDestX , posDestY, Math.round(posDestX+dimDado*escalaDosDados), Math.round(posDestY+dimDado*escalaDosDados),
 		    posOrigX , posOrigY, posOrigX+dimDado, posOrigY+dimDado, 

@@ -11,9 +11,7 @@ public class Jogo {
     
     private Jogada jogada;
 
-    public Jogada getJogada() {
-	return jogada;
-    }
+    private boolean podeJogarDados;
     
     private int jogadorAtual = 0;
     
@@ -24,7 +22,8 @@ public class Jogo {
 	this.quantJogadores = nomes.length;
 	this.jogadores = new ArrayList<Jogador>();
 	this.jogada = new Jogada();
-	
+	this.podeJogarDados = true;
+        
 	for (String nom: nomes) {
 	    this.jogadores.add(new Jogador(nom));
 	}
@@ -76,6 +75,14 @@ public class Jogo {
     
     public void marcarDado(int posicao) {
 	this.jogada.marcarDado(posicao);
+    }
+    
+    public boolean getPodeJogarDados() {
+        return podeJogarDados;
+    }
+    
+    public Jogada getJogada() {
+	return jogada;
     }
 }
 

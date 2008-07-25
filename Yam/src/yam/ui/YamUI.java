@@ -6,13 +6,13 @@ import java.awt.image.BufferStrategy;
 import javax.swing.*;
 import yam.engine.*;
 
-public class YamUI extends JFrame implements KeyListener,MouseListener {
+public class YamUI extends JFrame implements MouseListener {
 
     private static final int windowWidth = 585;
     private static final int windowHeigth = 750;
     private DadoUI dadoUI;
     private CartelaUI cartelaUI;
-    
+    private BotaoJogarUI botaoJogarUI;
     
     //debug start
     private Jogo jogo;
@@ -22,8 +22,9 @@ public class YamUI extends JFrame implements KeyListener,MouseListener {
 	super();
 	setSize(windowWidth, windowHeigth);
 	this.dadoUI = new DadoUI(30, 50);
-	this.cartelaUI = new CartelaUI(30, 170);	
-	
+	this.cartelaUI = new CartelaUI(30, 170);
+	this.botaoJogarUI = new BotaoJogarUI(400, 200);
+        
 	setVisible(true);
 	setResizable(false);
 	setLocationRelativeTo(null);
@@ -34,7 +35,7 @@ public class YamUI extends JFrame implements KeyListener,MouseListener {
 		System.exit(0);
 	    }
 	});
-	addKeyListener(this);
+
 	addMouseListener(this);
 	
 	this.jogo = new Jogo(new String[]{"teste"});
@@ -52,7 +53,8 @@ public class YamUI extends JFrame implements KeyListener,MouseListener {
 
 	dadoUI.desenhar(gBuffer);
 	cartelaUI.desenhar(gBuffer);
-	
+	botaoJogarUI.desenhar(gBuffer);
+        
 	gBuffer.dispose();
 	
 	bf.show();
@@ -66,38 +68,6 @@ public class YamUI extends JFrame implements KeyListener,MouseListener {
     static public void main(String[] args) {
 	new YamUI();
     }
-
-    public void keyTyped(KeyEvent e) {
-	
-    }
-
-    public void keyPressed(KeyEvent e) {
-	switch (e.getKeyCode()) {
-	    case KeyEvent.VK_SPACE:
-		jogo.jogarDados();
-		break;
-	    case KeyEvent.VK_1:
-		jogo.marcarDado(0);
-		break;
-	    case KeyEvent.VK_2:
-		jogo.marcarDado(1);
-		break;
-	    case KeyEvent.VK_3:
-		jogo.marcarDado(2);
-		break;
-	    case KeyEvent.VK_4:
-		jogo.marcarDado(3);
-		break;
-	    case KeyEvent.VK_5:
-		jogo.marcarDado(4);
-		break;
-	}
-	sincronizar();
-    }
-
-    public void keyReleased(KeyEvent e) {
-	
-    }
     
     public void mouseClicked(MouseEvent e) {
     }
@@ -107,19 +77,32 @@ public class YamUI extends JFrame implements KeyListener,MouseListener {
 	int clickY = e.getY();
 	int dadoX = dadoUI.getPosX();
 	int dadoY = dadoUI.getPosY();
-	
-	
-	System.out.println(e.getPoint().toString());
-	if ( clickY > dadoY & clickY < Math.round(DadoUI.dimDado*DadoUI.escalaDosDados + dadoY)) {
+        boolean sincronizar=false;
+
+        //verifica clique no dado
+	if ( clickY >= dadoY & clickY <= Math.round(DadoUI.dimDado*DadoUI.escalaDosDados + dadoY)) {
 	    for (int i=0; i<5;i++) {
 		if ( clickX >= Math.round(i*(DadoUI.dimDado*DadoUI.escalaDosDados + DadoUI.espacoEntreDados) + dadoX ) &
 		    clickX <= Math.round((i+1)*DadoUI.dimDado*DadoUI.escalaDosDados + i*DadoUI.espacoEntreDados + dadoX )) {
 		    jogo.marcarDado(i);
-		    sincronizar();
-		    return;
+		    
+                    sincronizar=true;
+                    System.out.println(botaoJogarUI.isHabilitado());
+                    break;
 		}
 	    }
 	}
+        else {
+            //verifica clique no botão
+            if ( clickX >= botaoJogarUI.getPosX() & clickX <= botaoJogarUI.getPosX() + BotaoJogarUI.dimBotaoX &
+                  clickY >= botaoJogarUI.getPosY() & clickY <= botaoJogarUI.getPosY() + BotaoJogarUI.dimBotaoY  ) {
+                jogo.jogarDados();
+                
+                sincronizar=true;
+            }
+        }    
+            
+        if (sincronizar) {sincronizar();}
     }
 
     public void mouseReleased(MouseEvent e) {
@@ -138,6 +121,7 @@ public class YamUI extends JFrame implements KeyListener,MouseListener {
 	dadoUI.sincronizar(jogo.getJogada().getValoresDados(), jogo.getJogada().getMarcadosDados());
 	cartelaUI.sincronizar(jogo.getJogadorAtual().getCartela().getArrStatus(), 
 		jogo.getJogadorAtual().getCartela().getArrPontos());
+        botaoJogarUI.sincronizar(jogo.getPodeJogarDados());
 	this.desenhar();
     }
 }
