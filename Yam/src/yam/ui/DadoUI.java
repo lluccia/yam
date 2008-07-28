@@ -9,12 +9,13 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.imageio.ImageIO;
+import javax.swing.JComponent;
 
 /**
  *
  * @author leandro.c.de.luccia
  */
-public class DadoUI {
+public class DadoUI extends JComponent {
     
     public static final int dimDado=100;
     public static final int espacoEntreDados=20;
@@ -26,20 +27,11 @@ public class DadoUI {
     
     private int[] valores;
     
-    private int posX,posY;
-
-    public int getPosX() {
-	return posX;
-    }
-
-    public int getPosY() {
-	return posY;
-    }
-    
     public DadoUI(int posX,int posY) {
 	super();
-	this.posX=posX;
-	this.posY=posY;
+        this.setLocation(posX, posY);
+        this.setBounds(posX,posY,Math.round(5*dimDado*escalaDosDados+4*espacoEntreDados),Math.round(dimDado*escalaDosDados));
+        
 	this.marcados = new boolean[]{false,false,false,false,false};
 	this.valores = new int[]{1,2,3,4,5};
 	
@@ -52,11 +44,13 @@ public class DadoUI {
 	
     }
     
-    public void desenhar(Graphics g) {
-	int posDestX, posDestY, posOrigX, posOrigY;
+    @Override
+    protected void paintComponent(Graphics g) {
+        int posDestX, posDestY, posOrigX, posOrigY;
 	for (int i=0;i<5;i++) {
-	    posDestX = Math.round(i*(dimDado*escalaDosDados+espacoEntreDados) + posX);
-	    posDestY = posY;
+            posDestX = Math.round(i*(dimDado*escalaDosDados+espacoEntreDados));
+	    posDestY = 0;
+	    
 	    posOrigX = (valores[i]-1)*dimDado;
 	    if (marcados[i]==true) {posOrigY=100;} else {posOrigY=0;}
 	     
@@ -67,12 +61,11 @@ public class DadoUI {
 	
 	
 	}	
-    }	 
+    }
 
-   public void sincronizar(int[] val,boolean[] mar) {
+    public void sincronizar(int[] val,boolean[] mar) {
        this.valores = val;
        this.marcados = mar;
    }
 
-    
 }

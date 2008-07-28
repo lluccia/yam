@@ -9,39 +9,29 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.imageio.ImageIO;
+import javax.swing.*;
+
 
 /**
  *
  * @author leandro.c.de.luccia
  */
-public class BotaoJogarUI {
-    
+public class BotaoJogarUI extends JComponent {
+
     public static final int dimBotaoX=150;
     public static final int dimBotaoY=50;
     
     private BufferedImage imgBotao;
     
     private boolean habilitado;
-
-    public boolean isHabilitado() {
-        return habilitado;
-    }
-    
-    private int posX,posY;
-
-    public int getPosX() {
-	return posX;
-    }
-
-    public int getPosY() {
-	return posY;
-    }
     
     public BotaoJogarUI(int posX,int posY) {
 	super();
-	this.posX=posX;
-	this.posY=posY;
+        this.setLocation(posX, posY);
+        this.setBounds(posX,posY,dimBotaoX,dimBotaoY);
+
 	this.habilitado = true;
+
 		
 	try {
 	    imgBotao = ImageIO.read(new File("images/btnJogar.png"));
@@ -49,13 +39,14 @@ public class BotaoJogarUI {
 	catch (IOException e) {
 	    e.printStackTrace();
 	}
-	
+
     }
     
-    public void desenhar(Graphics g) {
+    @Override
+    public void paint(Graphics g) {
 	int posDestX, posDestY, posOrigX, posOrigY;
-	posDestX=posX;
-        posDestY=posY;
+	posDestX=0;
+        posDestY=0;
         posOrigX=0;
         if (habilitado) {posOrigY = 0;} else {posOrigY = 50;}
 
@@ -64,11 +55,13 @@ public class BotaoJogarUI {
                 posOrigX , posOrigY, posOrigX+dimBotaoX, posOrigY+dimBotaoY, 
                 null);
 
-    }	 
-
-   public void sincronizar(boolean hab) {
-       this.habilitado = hab;
-   }
-
+    }
     
+    public boolean isHabilitado() {
+        return habilitado;
+    }
+            
+    public void sincronizar(boolean hab) {
+        this.habilitado = hab;
+    }
 }

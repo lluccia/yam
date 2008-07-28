@@ -13,17 +13,20 @@ import yam.engine.*;
  *
  * @author leandro.c.de.luccia
  */
-public class CartelaUI extends JPanel{
+public class CartelaUI extends JComponent {
     
-    private int posX,posY;
+    public static int tamCelX=60;
+    public static int tamCelY=27;
     
     private StatusDaLinha[][] statusDasLinhas;
     
     private int[][] valoresDasLinhas;
     
     public CartelaUI(int posX,int posY) {
-	this.posX=posX;
-	this.posY=posY;
+        super();
+        this.setLocation(posX, posY);
+        this.setBounds(posX,posY, 5*tamCelX, 20*tamCelY);
+        
 	this.statusDasLinhas=new StatusDaLinha[4][19];
 	this.valoresDasLinhas=new int[4][19];
 	
@@ -35,9 +38,9 @@ public class CartelaUI extends JPanel{
 	
     }
     
-    public void desenhar(Graphics g) {
-	int tamCelX=60;
-	int tamCelY=27;
+    @Override
+    public void paintComponent(Graphics g) {
+	
 	boolean raised;
 	String[] labelsX={ "▼", "▲", "D", "S" };
 	String[] labelsY={
@@ -92,26 +95,24 @@ public class CartelaUI extends JPanel{
 		    }
 		}
 		if (!(i==0 & j==0) & j<19) {
-		    g.fill3DRect(posX+i*tamCelX, posY+j*tamCelY, tamCelX, tamCelY, raised);
-//		    g.fillRect(posX+i*tamCelX, posY+j*tamCelY, tamCelX, tamCelY);
+		    g.fill3DRect(i*tamCelX, j*tamCelY, tamCelX, tamCelY, raised);
 		}
 		else {
 		    if (j==19 & i==3) {
-			g.fill3DRect(posX+i*tamCelX, posY+j*tamCelY, tamCelX*2, tamCelY, raised);
-//			g.fillRect(posX+i*tamCelX, posY+j*tamCelY, tamCelX*2, tamCelY);
+			g.fill3DRect(i*tamCelX, j*tamCelY, tamCelX*2, tamCelY, raised);
 		    }
 		}
 		
 		//escreve labels
 		if (i==0 & j > 0 & j < 19) {
-		    int lblPosX = posX+i*tamCelX+(tamCelX/2) - labelsY[j-1].length()*5;
+		    int lblPosX = i*tamCelX+(tamCelX/2) - labelsY[j-1].length()*5;
 		    g.setColor(Color.black);
-		    g.drawChars(labelsY[j-1].toCharArray(), 0,labelsY[j-1].length(),lblPosX, posY+j*tamCelY+tamCelY-10);
+		    g.drawChars(labelsY[j-1].toCharArray(), 0,labelsY[j-1].length(),lblPosX, j*tamCelY+tamCelY-10);
 		}
 		if (i > 0 & j == 0 ) {
-		    int lblPosY = posY+(tamCelY/2) + 5;
+		    int lblPosY = (tamCelY/2) + 5;
 		    g.setColor(Color.black);
-		    g.drawChars(labelsX[i-1].toCharArray(), 0,labelsX[i-1].length(),posX+i*tamCelX+tamCelX/2-5, lblPosY );
+		    g.drawChars(labelsX[i-1].toCharArray(), 0,labelsX[i-1].length(),i*tamCelX+tamCelX/2-5, lblPosY );
 		}
 		
 		//escreve pontos
@@ -120,7 +121,8 @@ public class CartelaUI extends JPanel{
 	    }
 	}
     }	 
-    
+        
+
     public void sincronizar(StatusDaLinha[][] status, int[][] pontos){
 	this.statusDasLinhas = status;
 	this.valoresDasLinhas = pontos;
