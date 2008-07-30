@@ -6,7 +6,7 @@ import java.util.Iterator;
 public class Jogada {
 
     private ArrayList<Dado> dados;
-
+   
     private int pontosCombUm;
 
     private int pontosCombDois;
@@ -62,23 +62,34 @@ public class Jogada {
     public Jogada ()  {
         dados=new ArrayList<Dado>(5);
         for (int i=0; i<5; i++) {
-            dados.add(new Dado());
+            dados.add(new Dado(i+1));
         }
+        this.totalNosDados=15;
         setSeqJogada(0);
     }
-    
-    public void jogarDados () {
-        Iterator<Dado> itr = dados.iterator();
+        
+    /** 
+     * Joga os dados.
+     * Caso todos os dados estejam marcados para segurar, não efetiva a jogada.
+     */
+    public boolean jogarDados () {
+        //se todos os dados estiverem marcados, não efetua a jogada
         int tmpTotalNosDados=0;
-        while (itr.hasNext()) {
-            Dado dadoAtual = itr.next();
+        boolean todosMarcados=true;
+        for (Dado dadoAtual: dados) {
+            if (!dadoAtual.getMarcado()) {todosMarcados = false;}
             dadoAtual.jogar();
             tmpTotalNosDados+=dadoAtual.getValor();
         }
-        setTotalNosDados(tmpTotalNosDados);
-        setSeqJogada(getSeqJogada()+1);
-        ordenarDados();
-        verificarCombinacoes();
+        if (todosMarcados) {
+            return false;
+        } else {
+            setTotalNosDados(tmpTotalNosDados);
+            setSeqJogada(getSeqJogada()+1);
+            ordenarDados();
+            verificarCombinacoes();
+            return true;
+        }
     }
     
     /** 
@@ -267,8 +278,11 @@ public class Jogada {
     /** 
      * Zera o número sequencial da jogada.
      */
-    public void inicializarJogada () {
+    public void zeraSeqJogada () {
         this.setSeqJogada(0);
+        for (Dado d: dados) {
+            d.desmarcar();
+        }
     }
     
     public boolean getCombCinco () {
@@ -571,8 +585,8 @@ public class Jogada {
 		return false;
 	}
     }
-		
-	public int verificaPontosCombinacao(TipoDeLinha tpLinha) {
+    
+    public int verificaPontosCombinacao(TipoDeLinha tpLinha) {
 	switch (tpLinha) {
 	    case um:
 		return getPontosCombUm();

@@ -16,6 +16,12 @@ public class Dado {
         this.setMarcado(false);
         this.setValor(geradorRandomico.nextInt(6)+1);
     }
+    
+    public Dado (int valor) {
+        geradorRandomico = new Random();
+        this.setMarcado(false);
+        this.setValor(valor);
+    }
         
     public int getValor () {
         return valor;
@@ -29,6 +35,10 @@ public class Dado {
 
     public void marcar () {
         this.setMarcado( !this.getMarcado() );
+    }
+    
+    public void desmarcar () {
+        this.setMarcado( false );
     }
 
     private void setMarcado (boolean val) {

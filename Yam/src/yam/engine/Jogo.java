@@ -13,6 +13,10 @@ public class Jogo {
 
     private boolean podeJogarDados;
     
+    private boolean podeMarcarDados;
+    
+    private boolean podeMarcarPontos;
+    
     private int jogadorAtual = 0;
     
     private int quantJogadores;
@@ -22,7 +26,10 @@ public class Jogo {
 	this.quantJogadores = nomes.length;
 	this.jogadores = new ArrayList<Jogador>();
 	this.jogada = new Jogada();
-	this.podeJogarDados = true;
+	this.podeJogarDados = false;
+	this.podeMarcarDados = false;
+	this.podeMarcarPontos = false;
+        
         
 	for (String nom: nomes) {
 	    this.jogadores.add(new Jogador(nom));
@@ -31,12 +38,12 @@ public class Jogo {
 
     public void iniciarJogo() {
 	this.statusDoJogo = StatusDoJogo.emAndamento;
-	
+	this.podeJogarDados = true;
     }
     
     public void finalizarJogo() {
 	this.statusDoJogo = StatusDoJogo.finalizacao;
-	
+        this.podeJogarDados = false;
     }
     
     public StatusDoJogo getStatusDoJogo() {
@@ -64,25 +71,47 @@ public class Jogo {
     }
     
     public void jogarDados(){
-	this.jogada.jogarDados();
-	this.getJogadorAtual().getCartela().verificarMarcacoes(jogada);
+	if (jogada.jogarDados()) {
+            getJogadorAtual().getCartela().verificarMarcacoes(jogada);
+            if (jogada.getSeqJogada() > 0 & jogada.getSeqJogada() < 3) {
+                podeMarcarPontos = true;
+                podeMarcarDados = true;
+            } else {
+                podeJogarDados = false;
+                podeMarcarDados = false;
+            }
+        }
     }
     
     public void marcarPontos(TipoDeColuna tpColuna,TipoDeLinha tpLinha){
-	this.jogadores.get(jogadorAtual).getCartela().marcaPontos(tpColuna, tpLinha, jogada);
-	proximoJogador();
+	if ( getJogadorAtual().getCartela().marcaPontos(tpColuna, tpLinha, jogada)) {
+            proximoJogador();
+            jogada.zeraSeqJogada();
+            podeJogarDados = true;
+            podeMarcarPontos = false;
+            getJogadorAtual().getCartela().limpaStatus();
+            if (getJogadorAtual().getCartela().cartelaCheia()) { finalizarJogo(); }
+        }
     }
     
     public void marcarDado(int posicao) {
-	this.jogada.marcarDado(posicao);
+	if (this.podeMarcarDados) { this.jogada.marcarDado(posicao); }
     }
     
     public boolean getPodeJogarDados() {
         return podeJogarDados;
     }
     
+    public boolean getPodeMarcarDados() {
+        return podeMarcarDados;
+    }
+    
     public Jogada getJogada() {
 	return jogada;
+    }
+    
+    public int getTotalNosDados() {
+	return jogada.getTotalNosDados();
     }
 }
 

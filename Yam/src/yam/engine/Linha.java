@@ -57,6 +57,10 @@ public class Linha {
         return statusDaLinha;
     }
     
+    public void setStatus (StatusDaLinha stat) {
+        this.statusDaLinha=stat;
+    }
+    
     public void setPontos (int val) {
         this.pontos = val;
     }

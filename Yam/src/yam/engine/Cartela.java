@@ -1,8 +1,6 @@
 package yam.engine;
 
-import java.util.Iterator;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class Cartela {
 
@@ -80,27 +78,49 @@ public class Cartela {
         return cheia;
     }
     
+    public void limpaStatus() {
+        for (Coluna col: colunas) {
+            for (TipoDeLinha lin: TipoDeLinha.values()) {
+                if (col.getStatus(lin)==StatusDaLinha.marcavel | 
+                        col.getStatus(lin)==StatusDaLinha.riscavel) {
+                    col.setStatus(lin, StatusDaLinha.livre);
+                }
+            }
+        }
+    }
+    
     public int[][] getArrPontos() {
-        int[][] retArray = new int[colunas.size()][colunas.get(0).getLinhas().size()];
+        int[][] retArray = new int[colunas.size()][colunas.get(0).getLinhas().size()+1];
         
         for (TipoDeColuna col: TipoDeColuna.values()) {
             for (TipoDeLinha lin: TipoDeLinha.values()) {
                 retArray[col.ordinal()][lin.ordinal()]=getPontos(col,lin);
             }
         }
-       
+        
+        retArray[2][18]=getTotalDePontos();
+        
         return retArray;
     }
     
     public StatusDaLinha[][] getArrStatus() {
-        StatusDaLinha[][] retArray = new StatusDaLinha[colunas.size()][colunas.get(0).getLinhas().size()];
+        StatusDaLinha[][] retArray = new StatusDaLinha[colunas.size()][colunas.get(0).getLinhas().size()+1];
         
         for (TipoDeColuna col: TipoDeColuna.values()) {
             for (TipoDeLinha lin: TipoDeLinha.values()) {
-                retArray[col.ordinal()][lin.ordinal()]=getStatus(col,lin);
+                if ((lin == TipoDeLinha.primeiroTotal |
+                        lin == TipoDeLinha.bonus |
+                        lin == TipoDeLinha.segundoTotal |
+                        lin == TipoDeLinha.terceiroTotal |
+                        lin == TipoDeLinha.segundoEterceiroTotais) &
+                        getPontos(col, lin) > 0) {
+                    retArray[col.ordinal()][lin.ordinal()]=StatusDaLinha.marcada;
+                } else {
+                    retArray[col.ordinal()][lin.ordinal()]=getStatus(col,lin);
+                }
             }
         }
-       
+        if (totalDePontos > 0){ retArray[2][18]=StatusDaLinha.marcada; }
         return retArray;
     }
     

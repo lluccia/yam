@@ -29,7 +29,6 @@ public class DadoUI extends JComponent {
     
     public DadoUI(int posX,int posY) {
 	super();
-        this.setLocation(posX, posY);
         this.setBounds(posX,posY,Math.round(5*dimDado*escalaDosDados+4*espacoEntreDados),Math.round(dimDado*escalaDosDados));
         
 	this.marcados = new boolean[]{false,false,false,false,false};

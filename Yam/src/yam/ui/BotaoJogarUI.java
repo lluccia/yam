@@ -27,10 +27,9 @@ public class BotaoJogarUI extends JComponent {
     
     public BotaoJogarUI(int posX,int posY) {
 	super();
-        this.setLocation(posX, posY);
         this.setBounds(posX,posY,dimBotaoX,dimBotaoY);
 
-	this.habilitado = true;
+	this.habilitado = false;
 
 		
 	try {

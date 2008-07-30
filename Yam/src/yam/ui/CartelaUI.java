@@ -24,14 +24,13 @@ public class CartelaUI extends JComponent {
     
     public CartelaUI(int posX,int posY) {
         super();
-        this.setLocation(posX, posY);
         this.setBounds(posX,posY, 5*tamCelX, 20*tamCelY);
         
-	this.statusDasLinhas=new StatusDaLinha[4][19];
-	this.valoresDasLinhas=new int[4][19];
+	this.statusDasLinhas=new StatusDaLinha[4][20];
+	this.valoresDasLinhas=new int[4][20];
 	
 	for (int i=0;i<4;i++) {
-	    for (int j=0;j<19;j++) {
+	    for (int j=0;j<20;j++) {
 		statusDasLinhas[i][j]=StatusDaLinha.livre;
 	    }
 	}
@@ -73,7 +72,7 @@ public class CartelaUI extends JComponent {
 		    
 		}
 		else {
-		    if (i>0 & (j>=7 & j<=9 | j>=17 & j<19)) {
+		    if (i>0 & (j>=7 & j<=9 | j>=17 & j<20)) {
 			g.setColor(Color.lightGray);
 			raised=false;
 		    }
@@ -81,6 +80,12 @@ public class CartelaUI extends JComponent {
 			if (i!=0 & j!=0 & j<19){
 			    switch (statusDasLinhas[i-1][j-1]) {
 				case livre:
+				    g.setColor(Color.white);    
+				    break;
+                                case marcada:
+				    g.setColor(Color.white);    
+				    break;
+                                case riscada:
 				    g.setColor(Color.white);    
 				    break;
 				case marcavel:
@@ -116,8 +121,43 @@ public class CartelaUI extends JComponent {
 		}
 		
 		//escreve pontos
-		// TODO
-		
+		if (i > 0 & j > 0 ) {
+                    if (statusDasLinhas[i-1][j-1] == StatusDaLinha.marcada  |
+                            statusDasLinhas[i-1][j-1] == StatusDaLinha.riscada ) {
+                        
+                        //define cores dos textos
+                        if ( (j > 6 & j < 10) | j > 16) {
+                            g.setColor(Color.white);
+                        }
+                        else {
+                            g.setColor(Color.black);    
+                        }
+
+                        //desenha os números
+                        char[] marca;
+                        int lblPosX,lblPosY;
+                        
+                        if (statusDasLinhas[i-1][j-1] == StatusDaLinha.riscada) {
+                            String tmp = "---";
+                            marca = tmp.toCharArray();
+                        } else {
+                            marca = Integer.toString(valoresDasLinhas[i-1][j-1]).toCharArray();
+                        }
+                        
+                        if (j==19) {
+                            lblPosX = i*tamCelX + (2*tamCelX/2) - marca.length*5;
+                        } else {
+                            lblPosX = i*tamCelX + (tamCelX/2) - marca.length*5;
+                        }
+                        lblPosY = j*tamCelY + (tamCelY/2) + 5;
+                        
+                        if (j < 19 | (j==19 & i==3)) {
+                            g.drawChars(marca, 
+                                    0, marca.length,
+                                    lblPosX, lblPosY );
+                        }
+                    }
+		}
 	    }
 	}
     }	 
