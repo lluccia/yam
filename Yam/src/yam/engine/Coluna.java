@@ -232,7 +232,7 @@ public class Coluna {
     }
     
     public int getPontos(TipoDeLinha linha) {
-        return linhas.get(linha.ordinal()).getPontos();    this.c
+        return linhas.get(linha.ordinal()).getPontos();
     }
     
     public StatusDaLinha getStatus(TipoDeLinha linha) {
