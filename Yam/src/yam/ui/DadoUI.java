@@ -6,6 +6,7 @@
 package yam.ui;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.imageio.ImageIO;
@@ -19,13 +20,17 @@ public class DadoUI extends JComponent {
     
     public static final int dimDado=100;
     public static final int espacoEntreDados=20;
-    public static final float escalaDosDados=0.9f;
+    public static final float escalaDosDados=0.7f;
     
     private BufferedImage imgDados;
     
     private boolean[] marcados;
     
     private int[] valores;
+    
+    ActionListener actionListener;
+    
+    String actionCommand;
     
     public DadoUI(int posX,int posY) {
 	super();
@@ -40,7 +45,7 @@ public class DadoUI extends JComponent {
 	catch (IOException e) {
 	    
 	}
-	
+	enableEvents( AWTEvent.MOUSE_EVENT_MASK );
     }
     
     @Override
@@ -67,4 +72,31 @@ public class DadoUI extends JComponent {
        this.marcados = mar;
    }
 
+    @Override
+    public void processEvent( AWTEvent e ) {
+        if (e.getID() == MouseEvent.MOUSE_CLICKED){
+            fireEvent();
+        }
+        super.processEvent(e);
+    }
+
+    public void setActionCommand( String actionCommand ) {
+        this.actionCommand = actionCommand;
+    }
+
+    public void addActionListener(ActionListener l) {
+        actionListener = AWTEventMulticaster.add(actionListener, l);
+    }
+
+    public void removeActionListener(ActionListener l) {
+        actionListener = AWTEventMulticaster.remove(actionListener, l);
+    }
+
+    private void fireEvent() {
+        if (actionListener != null) {
+            ActionEvent event = new ActionEvent( 
+                    this, ActionEvent.ACTION_PERFORMED, actionCommand );
+            actionListener.actionPerformed( event );
+        }
+    }
 }

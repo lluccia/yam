@@ -6,6 +6,7 @@
 package yam.ui;
 
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import yam.engine.*;
 
@@ -15,12 +16,20 @@ import yam.engine.*;
  */
 public class CartelaUI extends JComponent {
     
-    public static int tamCelX=60;
-    public static int tamCelY=27;
+    public static int tamCelX=55;
+    public static int tamCelY=25;
+    
+    private static Color clrLightRed = new Color(255,100,100);
+    private static Color clrLightGreen = new Color(100,255,100);
+    private static Color clrLightYellow = new Color(253,250,229);
     
     private StatusDaLinha[][] statusDasLinhas;
     
     private int[][] valoresDasLinhas;
+        
+    ActionListener actionListener;
+    
+    String actionCommand;
     
     public CartelaUI(int posX,int posY) {
         super();
@@ -34,12 +43,18 @@ public class CartelaUI extends JComponent {
 		statusDasLinhas[i][j]=StatusDaLinha.livre;
 	    }
 	}
-	
+        
+	enableEvents( AWTEvent.MOUSE_EVENT_MASK );
     }
     
     @Override
     public void paintComponent(Graphics g) {
-	
+	int posDestX, posDestY, posOrigX, posOrigY;
+	posDestX=0;
+        posDestY=0;
+        posOrigX=0;
+        posOrigY=0;
+        
 	boolean raised;
 	String[] labelsX={ "▼", "▲", "D", "S" };
 	String[] labelsY={
@@ -62,6 +77,7 @@ public class CartelaUI extends JComponent {
 	    "3ºtot",
 	    "2º+3º"
 	};
+        
 	g.setFont(new Font("Courier New", Font.BOLD, 16));
 	
 	for (int i=0;i<5;i++){
@@ -80,19 +96,19 @@ public class CartelaUI extends JComponent {
 			if (i!=0 & j!=0 & j<19){
 			    switch (statusDasLinhas[i-1][j-1]) {
 				case livre:
-				    g.setColor(Color.white);    
+				    g.setColor(clrLightYellow);    
 				    break;
                                 case marcada:
-				    g.setColor(Color.white);    
+				    g.setColor(clrLightYellow);    
 				    break;
                                 case riscada:
 				    g.setColor(Color.white);    
 				    break;
 				case marcavel:
-				    g.setColor(Color.green);    
+				    g.setColor(clrLightGreen);    
 				    break;
 				case riscavel:
-				    g.setColor(Color.red);    
+				    g.setColor(clrLightRed);
 				    break;
 			    }
 			}
@@ -168,5 +184,31 @@ public class CartelaUI extends JComponent {
 	this.valoresDasLinhas = pontos;
     }
     
+    @Override
+    public void processEvent( AWTEvent e ) {
+        if (e.getID() == MouseEvent.MOUSE_CLICKED){
+            fireEvent();
+        }
+        super.processEvent(e);
+    }
 
+    public void setActionCommand( String actionCommand ) {
+        this.actionCommand = actionCommand;
+    }
+
+    public void addActionListener(ActionListener l) {
+        actionListener = AWTEventMulticaster.add(actionListener, l);
+    }
+
+    public void removeActionListener(ActionListener l) {
+        actionListener = AWTEventMulticaster.remove(actionListener, l);
+    }
+
+    private void fireEvent() {
+        if (actionListener != null) {
+            ActionEvent event = new ActionEvent( 
+                    this, ActionEvent.ACTION_PERFORMED, actionCommand );
+            actionListener.actionPerformed( event );
+        }
+    }
 }

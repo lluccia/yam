@@ -5,7 +5,6 @@
 <project name="Yam" default="default" basedir=".">
     <description>Builds, tests, and runs the project Yam.</description>
     <import file="nbproject/build-impl.xml"/>
-    <import file="nbproject/profiler-build-impl.xml"/>
     <!--
 
     There exist several targets which are by default empty and which can be 
@@ -67,4 +66,11 @@
     nbproject/build-impl.xml file. 
 
     -->
+    <target depends="init" name="-post-jar">
+        <copy todir="${dist.dir}/images">
+            <fileset dir="images">
+                <include name="**/*.png"/>
+            </fileset>
+        </copy>
+    </target>
 </project>

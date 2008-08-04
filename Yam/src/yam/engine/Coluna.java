@@ -247,6 +247,10 @@ public class Coluna {
         this.linhas.get(linha.ordinal()).setPontos(pontos);    
     }
     
+    public void limpaPontos(TipoDeLinha linha) {
+        setPontos(linha,0);
+    }
+    
     private void sumarizaTotais () {
         int temp1=0,temp2=0;
         for(int i=TipoDeLinha.um.ordinal();i<=TipoDeLinha.seis.ordinal();i++) {

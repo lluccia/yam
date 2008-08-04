@@ -7,17 +7,15 @@ import yam.engine.*;
 
 public class YamUI extends JFrame implements MouseListener,ActionListener  {
 
-    private static final int windowWidth = 585;
-    private static final int windowHeigth = 750;
+    private static final int windowWidth = 530;
+    private static final int windowHeigth = 680;
     private DadoUI dadoUI;
     private CartelaUI cartelaUI;
     private BotaoJogarUI botaoJogarUI;
     private JLabel lblTotalNosDados;
     private JLabel lblJogada;
-    
-    //debug start
+
     private Jogo jogo;
-    //debug end
 
     public YamUI() {    
         super();
@@ -27,13 +25,14 @@ public class YamUI extends JFrame implements MouseListener,ActionListener  {
         this.jogo = new Jogo(new String[]{"teste"});
         
         //criação das classes
-        this.dadoUI = new DadoUI(20, 20);
-	this.cartelaUI = new CartelaUI(30, 150);
-	this.botaoJogarUI = new BotaoJogarUI(380, 200);
+        this.dadoUI = new DadoUI(40, 20);
+	this.cartelaUI = new CartelaUI(20, 110);
+	this.botaoJogarUI = new BotaoJogarUI(330, 200);
         
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         getContentPane().setBackground(Color.getHSBColor(0.36f, 1.0f, 0.5f));
+        setTitle("YAM!");
         getContentPane().add(dadoUI,new org.netbeans.lib.awtextra.AbsoluteConstraints(dadoUI.getLocation(),dadoUI.getSize()));
         getContentPane().add(cartelaUI,new org.netbeans.lib.awtextra.AbsoluteConstraints(cartelaUI.getLocation(),cartelaUI.getSize()));
         getContentPane().add(botaoJogarUI,new org.netbeans.lib.awtextra.AbsoluteConstraints(botaoJogarUI.getLocation(),botaoJogarUI.getSize()));
@@ -55,11 +54,11 @@ public class YamUI extends JFrame implements MouseListener,ActionListener  {
         
         lblTotalNosDados = new JLabel("Total nos dados: 15");
         lblTotalNosDados.setFont(new Font("Courier New", Font.BOLD, 17));
-        lblTotalNosDados.setBounds(355, 140, 200, 20);
+        lblTotalNosDados.setBounds(310, 120, 200, 20);
         getContentPane().add(lblTotalNosDados, new org.netbeans.lib.awtextra.AbsoluteConstraints(lblTotalNosDados.getLocation(),lblTotalNosDados.getSize()));
         lblJogada = new JLabel("Jogada: 0");
         lblJogada.setFont(new Font("Courier New", Font.BOLD, 17));
-        lblJogada.setBounds(355, 170, 200, 20);
+        lblJogada.setBounds(355, 150, 200, 20);
         getContentPane().add(lblJogada, new org.netbeans.lib.awtextra.AbsoluteConstraints(lblJogada.getLocation(),lblJogada.getSize()));
         
         
@@ -77,18 +76,34 @@ public class YamUI extends JFrame implements MouseListener,ActionListener  {
 
         dadoUI.addMouseListener(this);
         cartelaUI.addMouseListener(this);
-        botaoJogarUI.addMouseListener(this);
-	addMouseListener(this);
+
+        botaoJogarUI.addActionListener(this);
+        botaoJogarUI.setActionCommand("actJogarDados");
 	
     }
 
     public void mouseClicked(MouseEvent e) {
+        // não faz nada
+    }
+        
+    public void sincronizar() {
+	dadoUI.sincronizar(jogo.getJogada().getValoresDados(), jogo.getJogada().getMarcadosDados());
+	cartelaUI.sincronizar(jogo.getJogadorAtual().getCartela().getArrStatus(), 
+                jogo.getJogadorAtual().getCartela().getArrPontos());
+        botaoJogarUI.sincronizar(jogo.getPodeJogarDados());
+        
+        lblTotalNosDados.setText("Total nos dados: " + jogo.getTotalNosDados());
+        lblJogada.setText("Jogada: " + jogo.getJogada().getSeqJogada());
+	repaint();
+    }
+
+    static public void main(String[] args) {
+	new YamUI();
+    }
+
+    public void mousePressed(MouseEvent e) {
         if (e.getButton()==MouseEvent.BUTTON1){
-            if (e.getComponent() == botaoJogarUI & jogo.getPodeJogarDados()) {
-                jogo.jogarDados();
-                sincronizar();            
-            }
-            else if (e.getComponent() == dadoUI ) {
+            if (e.getComponent() == dadoUI ) {
                 int clickX = e.getX();
                 for (int i=0; i<5;i++) {
                     if ( clickX >= Math.round(i*(DadoUI.dimDado*DadoUI.escalaDosDados + DadoUI.espacoEntreDados)) &
@@ -112,47 +127,31 @@ public class YamUI extends JFrame implements MouseListener,ActionListener  {
             }
         }  
     }
-        
-    public void sincronizar() {
-	dadoUI.sincronizar(jogo.getJogada().getValoresDados(), jogo.getJogada().getMarcadosDados());
-	cartelaUI.sincronizar(jogo.getJogadorAtual().getCartela().getArrStatus(), 
-                jogo.getJogadorAtual().getCartela().getArrPontos());
-        botaoJogarUI.sincronizar(jogo.getPodeJogarDados());
-        
-        lblTotalNosDados.setText("Total nos dados: " + jogo.getTotalNosDados());
-        lblJogada.setText("Jogada: " + jogo.getJogada().getSeqJogada());
-	repaint();
-    }
-
-    static public void main(String[] args) {
-	new YamUI();
-    }
-
-    public void mousePressed(MouseEvent e) {
-//        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     public void mouseReleased(MouseEvent e) {
-//        throw new UnsupportedOperationException("Not supported yet.");
+        // não faz nada
     }
 
     public void mouseEntered(MouseEvent e) {
-//        throw new UnsupportedOperationException("Not supported yet.");
+        // não faz nada
     }
 
     public void mouseExited(MouseEvent e) {
-//        throw new UnsupportedOperationException("Not supported yet.");
+        // não faz nada
     }
 
     public void actionPerformed(ActionEvent e) {
         String action = e.getActionCommand();
-        if (action.equals("actNovoJogo")) {
-            System.out.println ("novo jogo");
+//        System.out.println(action);
+        
+        if (action.equals("actJogarDados") & jogo.getPodeJogarDados()) {
+            jogo.jogarDados();
+            sincronizar();            
+        }
+        else if (action.equals("actNovoJogo")) {
             jogo.iniciarJogo();
             sincronizar();
         }
-        
-        
     }
 
 }

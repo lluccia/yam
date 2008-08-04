@@ -37,7 +37,12 @@ public class Jogo {
     }
 
     public void iniciarJogo() {
-	this.statusDoJogo = StatusDoJogo.emAndamento;
+        this.statusDoJogo = StatusDoJogo.emAndamento;
+        for (Jogador j: jogadores) {
+            j.getCartela().limpaCartela();
+        }
+        jogada.desmarcarDados();
+        jogada.zeraSeqJogada();
 	this.podeJogarDados = true;
     }
     

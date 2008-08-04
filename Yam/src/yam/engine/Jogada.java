@@ -91,6 +91,12 @@ public class Jogada {
             return true;
         }
     }
+
+    void desmarcarDados() {
+        for (Dado d: dados) {
+            d.desmarcar();
+        }
+    }
     
     /** 
      * Ordena os dados em ordem crescente

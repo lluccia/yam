@@ -89,6 +89,21 @@ public class Cartela {
         }
     }
     
+    public void limpaPontos() {
+        for (Coluna col: colunas) {
+            for (TipoDeLinha lin: TipoDeLinha.values()) {
+                col.limpaPontos(lin);
+                col.setStatus(lin, StatusDaLinha.livre);
+            }
+        }
+    }
+    
+    public void limpaCartela() {
+        limpaPontos();
+        limpaStatus();
+        this.setTotalDePontos(0);
+    }
+    
     public int[][] getArrPontos() {
         int[][] retArray = new int[colunas.size()][colunas.get(0).getLinhas().size()+1];
         
