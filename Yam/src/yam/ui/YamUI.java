@@ -2,7 +2,9 @@ package yam.ui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import javax.swing.*;
+import javax.sound.sampled.*;
 import yam.engine.*;
 
 public class YamUI extends JFrame implements MouseListener,ActionListener  {
@@ -17,7 +19,10 @@ public class YamUI extends JFrame implements MouseListener,ActionListener  {
 
     private Jogo jogo;
 
-    public YamUI() {    
+    private Clip[] clipDados;
+    private Clip clipMarca, clipRisca;
+    
+    public YamUI() throws Exception {    
         super();
         setSize(windowWidth, windowHeigth);
         
@@ -80,6 +85,30 @@ public class YamUI extends JFrame implements MouseListener,ActionListener  {
         botaoJogarUI.addActionListener(this);
         botaoJogarUI.setActionCommand("actJogarDados");
 	
+        // inicializa sistema de áudio
+        AudioInputStream[] asDados= new AudioInputStream[5];
+        AudioInputStream asMarca,asRisca;
+        
+        clipDados = new Clip[5];
+        for (int i=0 ; i<5; i++) {
+            asDados[i] = AudioSystem.getAudioInputStream(new File("sounds/d" + (i+1) + ".au"));
+            clipDados[i] = (Clip) AudioSystem.getLine(
+                    new DataLine.Info(Clip.class, asDados[i].getFormat())
+                    );
+            clipDados[i].open(asDados[i]);
+        }
+
+        asMarca = AudioSystem.getAudioInputStream(new File("sounds/marca.au"));
+        clipMarca = (Clip) AudioSystem.getLine(
+                    new DataLine.Info(Clip.class, asMarca.getFormat())
+                    );
+        clipMarca.open(asMarca);
+        
+        asRisca = AudioSystem.getAudioInputStream(new File("sounds/risca.au"));
+        clipRisca =(Clip) AudioSystem.getLine(
+                    new DataLine.Info(Clip.class, asRisca.getFormat())
+                    );
+        clipRisca.open(asRisca);
     }
 
     public void mouseClicked(MouseEvent e) {
@@ -97,7 +126,7 @@ public class YamUI extends JFrame implements MouseListener,ActionListener  {
 	repaint();
     }
 
-    static public void main(String[] args) {
+    static public void main(String[] args) throws Exception {
 	new YamUI();
     }
 
@@ -109,8 +138,6 @@ public class YamUI extends JFrame implements MouseListener,ActionListener  {
                     if ( clickX >= Math.round(i*(DadoUI.dimDado*DadoUI.escalaDosDados + DadoUI.espacoEntreDados)) &
                             clickX <= Math.round((i+1)*DadoUI.dimDado*DadoUI.escalaDosDados + i*DadoUI.espacoEntreDados )) {
                         jogo.marcarDado(i);
-                        
-                    
                         sincronizar();
                         break;
                     }
@@ -121,7 +148,17 @@ public class YamUI extends JFrame implements MouseListener,ActionListener  {
                 int lin = e.getY() / CartelaUI.tamCelY;
 
                 if (col>0 & lin>0) {
-                    jogo.marcarPontos(TipoDeColuna.values()[col-1], TipoDeLinha.values()[lin-1]);
+                    if (jogo.marcarPontos(TipoDeColuna.values()[col-1], TipoDeLinha.values()[lin-1])) {
+                        switch (jogo.getJogadorAtual().getCartela().
+                                getStatus(TipoDeColuna.values()[col-1], TipoDeLinha.values()[lin-1])) {
+                            case marcada:
+                                audioMarca();
+                                break;
+                            case riscada:
+                                audioRisca();
+                                break;          
+                        }  
+                    }
                     sincronizar();
                 }
             }
@@ -142,10 +179,10 @@ public class YamUI extends JFrame implements MouseListener,ActionListener  {
 
     public void actionPerformed(ActionEvent e) {
         String action = e.getActionCommand();
-//        System.out.println(action);
         
         if (action.equals("actJogarDados") & jogo.getPodeJogarDados()) {
             jogo.jogarDados();
+            audioDados(jogo.getQuantDadosLivres());
             sincronizar();            
         }
         else if (action.equals("actNovoJogo")) {
@@ -153,5 +190,23 @@ public class YamUI extends JFrame implements MouseListener,ActionListener  {
             sincronizar();
         }
     }
+    
+    private void audioDados(int qtd) {
+        if (qtd > 0 & qtd < 6) {
+            clipDados[qtd-1].start();
+            clipDados[qtd-1].setFramePosition(0);
+        }
+    }
+    
+    private void audioMarca() {
+        clipMarca.start();
+        clipMarca.setFramePosition(0);
+    }
+    
+    private void audioRisca() {
+        clipRisca.start();
+        clipRisca.setFramePosition(0);
+    }
+    
 
 }

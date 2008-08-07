@@ -77,7 +77,7 @@ public class Jogada {
         int tmpTotalNosDados=0;
         boolean todosMarcados=true;
         for (Dado dadoAtual: dados) {
-            if (!dadoAtual.getMarcado()) {todosMarcados = false;}
+            if (!dadoAtual.isMarcado()) {todosMarcados = false;}
             dadoAtual.jogar();
             tmpTotalNosDados+=dadoAtual.getValor();
         }
@@ -96,6 +96,14 @@ public class Jogada {
         for (Dado d: dados) {
             d.desmarcar();
         }
+    }
+
+    int getQuantDadosLivres() {
+        int qtd = 0;
+        for (Dado d: dados) {
+            if (!d.isMarcado()) {qtd++;}
+        }
+        return qtd;
     }
     
     /** 
@@ -513,7 +521,7 @@ public class Jogada {
     public boolean[] getMarcadosDados() {
 	boolean[] ret = new boolean[5];
 	for (int i=0;i<5;i++){
-	    ret[i]=this.dados.get(i).getMarcado();
+	    ret[i]=this.dados.get(i).isMarcado();
 	}
 	return ret;
     }

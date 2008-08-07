@@ -72,5 +72,11 @@
                 <include name="**/*.png"/>
             </fileset>
         </copy>
+        <copy todir="${dist.dir}/sounds">
+            <fileset dir="sounds">
+                <include name="**/*.au"/>
+            </fileset>
+        </copy>
     </target>
+
 </project>

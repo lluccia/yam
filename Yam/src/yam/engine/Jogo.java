@@ -88,7 +88,7 @@ public class Jogo {
         }
     }
     
-    public void marcarPontos(TipoDeColuna tpColuna,TipoDeLinha tpLinha){
+    public boolean marcarPontos(TipoDeColuna tpColuna,TipoDeLinha tpLinha){
 	if ( getJogadorAtual().getCartela().marcaPontos(tpColuna, tpLinha, jogada)) {
             proximoJogador();
             jogada.zeraSeqJogada();
@@ -96,7 +96,9 @@ public class Jogo {
             podeMarcarPontos = false;
             getJogadorAtual().getCartela().limpaStatus();
             if (getJogadorAtual().getCartela().cartelaCheia()) { finalizarJogo(); }
+            return true;
         }
+        return false;
     }
     
     public void marcarDado(int posicao) {
@@ -109,6 +111,10 @@ public class Jogo {
     
     public boolean getPodeMarcarDados() {
         return podeMarcarDados;
+    }
+    
+    public int getQuantDadosLivres(){
+        return jogada.getQuantDadosLivres();        
     }
     
     public Jogada getJogada() {

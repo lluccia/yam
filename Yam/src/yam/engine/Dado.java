@@ -28,13 +28,13 @@ public class Dado {
     }
 
     public void jogar () {
-        if ( !this.getMarcado() ){
+        if ( !this.isMarcado() ){
             this.setValor(geradorRandomico.nextInt(6)+1);
         }
     }
 
     public void marcar () {
-        this.setMarcado( !this.getMarcado() );
+        this.setMarcado( !this.isMarcado() );
     }
     
     public void desmarcar () {
@@ -49,7 +49,7 @@ public class Dado {
         this.valor = val;
     }
 
-    public boolean getMarcado () {
+    public boolean isMarcado () {
         return marcado;
     }
 
