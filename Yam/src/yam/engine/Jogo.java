@@ -93,6 +93,7 @@ public class Jogo {
             proximoJogador();
             jogada.zeraSeqJogada();
             podeJogarDados = true;
+            podeMarcarDados = false;
             podeMarcarPontos = false;
             getJogadorAtual().getCartela().limpaStatus();
             if (getJogadorAtual().getCartela().cartelaCheia()) { finalizarJogo(); }
