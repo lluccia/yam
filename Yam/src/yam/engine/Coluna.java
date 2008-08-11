@@ -250,6 +250,11 @@ public class Coluna {
     public void limpaPontos(TipoDeLinha linha) {
         setPontos(linha,0);
     }
+
+    public void limpaMaxeMin() {
+        this.minDePontos=0;
+        this.maxDePontos=0;
+    }
     
     private void sumarizaTotais () {
         int temp1=0,temp2=0;

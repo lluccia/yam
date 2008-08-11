@@ -5,6 +5,11 @@
 <project name="Yam" default="default" basedir=".">
     <description>Builds, tests, and runs the project Yam.</description>
     <import file="nbproject/build-impl.xml"/>
+    
+    <taskdef name="nsis" classname="net.sf.nsisant.Task">
+        <classpath location="${basedir}/installer/nsisant-1.2.jar"/>
+    </taskdef>
+        
     <!--
 
     There exist several targets which are by default empty and which can be 
@@ -77,6 +82,17 @@
                 <include name="**/*.au"/>
             </fileset>
         </copy>
+        
+        <available file="C:\Program Files\NSIS\makensis.exe" property="nsis.available" />
+        
+        <antcall target="-pack" />
+        
     </target>
-
+    
+    <target name="-pack" if="nsis.available">
+        <nsis script="${basedir}/installer/Yam.nsi" path="C:\Program Files\NSIS">
+             <define name="PRODUCT_VERSION" value="0.1b"/>
+        </nsis>
+    </target>
+        
 </project>

@@ -91,6 +91,7 @@ public class Cartela {
     
     public void limpaPontos() {
         for (Coluna col: colunas) {
+            col.limpaMaxeMin();
             for (TipoDeLinha lin: TipoDeLinha.values()) {
                 col.limpaPontos(lin);
                 col.setStatus(lin, StatusDaLinha.livre);

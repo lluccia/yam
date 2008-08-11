@@ -3,11 +3,13 @@ package yam.ui;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import javax.sound.sampled.*;
 import yam.engine.*;
 
-public class YamUI extends JFrame implements MouseListener,ActionListener  {
+public class YamUI extends JFrame implements MouseListener,ActionListener {
 
     private static final int windowWidth = 530;
     private static final int windowHeigth = 680;
@@ -61,9 +63,9 @@ public class YamUI extends JFrame implements MouseListener,ActionListener  {
         lblTotalNosDados.setFont(new Font("Courier New", Font.BOLD, 17));
         lblTotalNosDados.setBounds(310, 120, 200, 20);
         getContentPane().add(lblTotalNosDados, new org.netbeans.lib.awtextra.AbsoluteConstraints(lblTotalNosDados.getLocation(),lblTotalNosDados.getSize()));
-        lblJogada = new JLabel("Jogada: 0");
+        lblJogada = new JLabel("Jogadas restantes: 0");
         lblJogada.setFont(new Font("Courier New", Font.BOLD, 17));
-        lblJogada.setBounds(355, 150, 200, 20);
+        lblJogada.setBounds(310, 150, 200, 20);
         getContentPane().add(lblJogada, new org.netbeans.lib.awtextra.AbsoluteConstraints(lblJogada.getLocation(),lblJogada.getSize()));
         
         
@@ -71,7 +73,7 @@ public class YamUI extends JFrame implements MouseListener,ActionListener  {
         setLocationRelativeTo(null); // centraliza a janela
 	setVisible(true);
 	setResizable(false);
-	
+      
 	addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent we) {
@@ -86,7 +88,7 @@ public class YamUI extends JFrame implements MouseListener,ActionListener  {
         botaoJogarUI.setActionCommand("actJogarDados");
 	
         // inicializa sistema de áudio
-        AudioInputStream[] asDados= new AudioInputStream[5];
+        AudioInputStream[] asDados = new AudioInputStream[5];
         AudioInputStream asMarca,asRisca;
         
         clipDados = new Clip[5];
@@ -122,7 +124,7 @@ public class YamUI extends JFrame implements MouseListener,ActionListener  {
         botaoJogarUI.sincronizar(jogo.getPodeJogarDados());
         
         lblTotalNosDados.setText("Total nos dados: " + jogo.getTotalNosDados());
-        lblJogada.setText("Jogada: " + jogo.getJogada().getSeqJogada());
+        lblJogada.setText("Jogadas restantes: " + (3 - jogo.getJogada().getSeqJogada()));
 	repaint();
     }
 
@@ -191,22 +193,44 @@ public class YamUI extends JFrame implements MouseListener,ActionListener  {
         }
     }
     
+    @SuppressWarnings("static-access")
     private void audioDados(int qtd) {
         if (qtd > 0 & qtd < 6) {
             clipDados[qtd-1].start();
             clipDados[qtd-1].setFramePosition(0);
+            while (clipDados[qtd-1].isRunning()) {
+                try {
+                    Thread.currentThread().sleep(100);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(YamUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
     }
     
+    @SuppressWarnings("static-access")
     private void audioMarca() {
         clipMarca.start();
+        while (clipMarca.isRunning()) {
+            try {
+                Thread.currentThread().sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(YamUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         clipMarca.setFramePosition(0);
     }
     
+    @SuppressWarnings("static-access")
     private void audioRisca() {
         clipRisca.start();
+        while (clipRisca.isRunning()) {
+            try {
+                Thread.currentThread().sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(YamUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         clipRisca.setFramePosition(0);
     }
-    
-
 }
