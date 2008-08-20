@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Yam!"
-;!define PRODUCT_VERSION "0.5b"
+;!define PRODUCT_VERSION "0.1b"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
@@ -35,11 +35,10 @@
 !insertmacro MUI_LANGUAGE "PortugueseBR"
 !insertmacro MUI_LANGUAGE "English"
 
-
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "YamSetup.exe"
+OutFile "${OUT_DIR}\YamSetup.exe"
 InstallDir "$PROGRAMFILES\Yam!"
 ShowInstDetails show
 ShowUnInstDetails show
@@ -49,15 +48,22 @@ Function .onInit
 FunctionEnd
 
 Section "MainSection" SEC01
-  SetOutPath "$INSTDIR\images"
+  
   SetOverwrite try
+  
+  SetOutPath "$INSTDIR"
+  File "..\dist\README.TXT"
+  File "..\dist\Yam.jar"
+  File "Yam.ico"
+  
+  SetOutPath "$INSTDIR\images"
   File "..\dist\images\btnJogar.png"
   File "..\dist\images\cartela.png"
   File "..\dist\images\dados.png"
+  
   SetOutPath "$INSTDIR\lib"
   File "..\dist\lib\AbsoluteLayout.jar"
-  SetOutPath "$INSTDIR"
-  File "..\dist\README.TXT"
+  
   SetOutPath "$INSTDIR\sounds"
   File "..\dist\sounds\d1.au"
   File "..\dist\sounds\d2.au"
@@ -66,18 +72,14 @@ Section "MainSection" SEC01
   File "..\dist\sounds\d5.au"
   File "..\dist\sounds\marca.au"
   File "..\dist\sounds\risca.au"
-  SetOutPath "$INSTDIR"
-  File "..\dist\Yam.jar"
-  File "Yam.ico"
+
   CreateDirectory "$STARTMENU\Yam!"
-  
   CreateShortCut "$STARTMENU\Yam!\Yam!.lnk" "$INSTDIR\Yam.jar" "" "$INSTDIR\Yam.ico"
   CreateShortCut "$DESKTOP\Yam!.lnk" "$INSTDIR\Yam.jar" "" "$INSTDIR\Yam.ico"
 SectionEnd
 
 Section -AdditionalIcons
-  CreateDirectory "$SMPROGRAMS\Yam!"
-  CreateShortCut "$SMPROGRAMS\Yam!\Uninstall.lnk" "$INSTDIR\uninst.exe"
+  CreateShortCut "$STARTMENU\Yam!\Uninstall.lnk" "$INSTDIR\uninst.exe"
 SectionEnd
 
 Section -Post
@@ -116,12 +118,12 @@ Section Uninstall
   Delete "$INSTDIR\images\btnJogar.png"
   Delete "$INSTDIR\Yam.ico"
 
-  Delete "$SMPROGRAMS\Yam!\Uninstall.lnk"
+  Delete "$STARTMENU\Yam!\Uninstall.lnk"
   Delete "$STARTMENU\Yam!\Yam!.lnk"
   Delete "$DESKTOP\Yam!.lnk"
 
   RMDir "$STARTMENU\Yam!"
-  RMDir "$SMPROGRAMS\Yam!"
+  RMDir "$STARTMENU\Yam!"
   RMDir "$INSTDIR\sounds"
   RMDir "$INSTDIR\lib"
   RMDir "$INSTDIR\images"

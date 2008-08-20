@@ -102,7 +102,7 @@ public class CartelaUI extends JComponent {
 				    g.setColor(clrLightYellow);    
 				    break;
                                 case riscada:
-				    g.setColor(Color.white);    
+				    g.setColor(clrLightYellow);    
 				    break;
 				case marcavel:
 				    g.setColor(clrLightGreen);    

@@ -28,5 +28,9 @@ public class Jogador {
     public void setCartela(Cartela cartela) {
         this.cartela = cartela;
     }
+
+    public int getTotalDePontos() {
+        return cartela.getTotalDePontos();
+    }
 }
 

@@ -80,10 +80,6 @@ public class BotaoJogarUI extends JComponent {
         super.processEvent(e);
     }
 
-    public void setActionCommand( String actionCommand ) {
-        this.actionCommand = actionCommand;
-    }
-
     public void addActionListener(ActionListener l) {
         actionListener = AWTEventMulticaster.add(actionListener, l);
     }

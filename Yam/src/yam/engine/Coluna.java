@@ -23,8 +23,8 @@ public class Coluna {
      * Marca pontos na linha especificada.
      * Caso não seja possível marcar pontos na linha, ela será riscada se possível.
      * 
-     * @param linha tipo da linha em que os pontos serão marcados.
-     * @param pontos quantidade de pontos a ser marcado.
+     * @param tpLinha tipo da linha em que os pontos serão marcados.
+     * @param jog jogada que deve ser utilizada para verificar se a marcação é possível.
      * @return <b>true</b>: quando for possível marcar pontos ou riscar a linha <br/>
      * <b>false</b>: quando não for possível
      */
