@@ -20,11 +20,16 @@ public class Jogo {
     private boolean podeMarcarPontos;
     
     private int jogadorAtual = 0;
+    private int jogadorAnterior = 0;
     
     private int quantJogadores;
 
     private Recordes recordes;
     
+    private boolean novosRecordesGerados;
+    
+    private boolean ultimoJogador;
+
     public Jogo () throws Exception{
         this.statusDoJogo = StatusDoJogo.inicializacao;
 	this.jogadores = new ArrayList<Jogador>();
@@ -32,7 +37,8 @@ public class Jogo {
 	this.podeJogarDados = false;
 	this.podeMarcarDados = false;
 	this.podeMarcarPontos = false;
-        
+        this.novosRecordesGerados=false;
+                
         recordes = new Recordes();
 
         leArquivoDeRecordes();
@@ -95,6 +101,10 @@ public class Jogo {
         return jogadores.get(jogadorAtual);
     }
     
+    public Jogador getJogadorAnterior() {
+        return jogadores.get(jogadorAnterior);
+    }
+    
     public int getIntJogadorAtual () {
         return jogadorAtual;
     }
@@ -104,7 +114,9 @@ public class Jogo {
     }
 
     public void proximoJogador() {
+        this.jogadorAnterior = this.jogadorAtual;
         this.jogadorAtual = (this.jogadorAtual + 1) % this.quantJogadores;
+        
     }
     
     public void jogarDados(){
@@ -129,8 +141,9 @@ public class Jogo {
             podeMarcarPontos = false;
             getJogadorAtual().getCartela().limpaStatus();
             
-            // TODO revisar para funcionar multiplayer.
-            if (getJogadorAtual().getCartela().cartelaCheia()) { finalizarJogo(); }
+            if (ultimoJogador & getJogadorAtual().getCartela().cartelaCheia()) { 
+                finalizarJogo(); 
+            }
             
             return true;
         }
@@ -161,35 +174,53 @@ public class Jogo {
 	return jogada.getTotalNosDados();
     }
     
-     public void leArquivoDeRecordes() throws Exception {
+     public void leArquivoDeRecordes() {
         if (new File ("recordes.bin").exists() ) {
-            ObjectInputStream objectIn = 
-                new ObjectInputStream(
-                new BufferedInputStream(
-                new FileInputStream("recordes.bin"
-                )));
+            try {
+                ObjectInputStream objectIn = 
+                    new ObjectInputStream(
+                    new BufferedInputStream(
+                    new FileInputStream("recordes.bin"
+                    )));
 
-            recordes = (Recordes) objectIn.readObject();
-            objectIn.close();    
+                Recordes tmpRecordes = (Recordes) objectIn.readObject();
+                objectIn.close();
+                recordes = tmpRecordes;
+            } catch (Exception e) {
+                gravaArquivoDeRecordes();
+                this.novosRecordesGerados=true;
+            }
         } else {
             gravaArquivoDeRecordes();
-        }       
+        }
     }
     
-    public void gravaArquivoDeRecordes() throws Exception {
-        ObjectOutputStream objectOut = 
-                new ObjectOutputStream(
-                new BufferedOutputStream(
-                new FileOutputStream("recordes.bin"
-                )));
+    public void gravaArquivoDeRecordes() {
+        try {
+            ObjectOutputStream objectOut = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream("recordes.bin")));
 
-        objectOut.writeObject(recordes);
-        objectOut.close();
+            objectOut.writeObject(recordes);
+            objectOut.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Jogo.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public Recordes getRecordes() {
         return recordes;
     }
     
+    public boolean novosRecordesGerados() {
+        return novosRecordesGerados;
+    }
+    
+    public boolean ultimoJogador() {
+        return ultimoJogador;
+    }
+
+    public int getQuantJogadores() {
+        return quantJogadores;
+    }
+
 }
 

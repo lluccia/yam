@@ -5,6 +5,8 @@ package yam.ui;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
@@ -15,25 +17,45 @@ public class YamUI extends JFrame implements MouseListener {
 
     private static final int windowWidth = 530;
     private static final int windowHeigth = 680;
+    
     private DadoUI dadoUI;
     private CartelaUI cartelaUI;
     private BotaoJogarUI botaoJogarUI;
     private JogadoresUI jogadoresUI;
+       
+    private Jogo jogo;
     
     private JLabel lblTotalNosDados;
     private JLabel lblJogada;
 
-    private Jogo jogo;
-
     private Clip[] clipDados;
     private Clip clipMarca, clipRisca;
+    
+    private Timer timerCartela; // utilizado para manter a exibição da cartela atual por alguns segundos na tela no jogo multiplayer
+    private boolean flagTimerCartela; // indica se o timer está sendo executado
+    
+    
+    class TimerCartela extends TimerTask {
+    public void run() {
+        flagTimerCartela = false;
+        sincronizar();
+    }
+  }
     
     public YamUI() throws Exception {    
         super();
         setSize(windowWidth, windowHeigth);
         
+        //inicialização do timer
+        timerCartela = new Timer();
+        flagTimerCartela = false;
+        
         //preparação do engine
         this.jogo = new Jogo();
+        if (jogo.novosRecordesGerados()) {
+            JOptionPane.showMessageDialog(this, "Erro abrindo o arquivo de recordes. Um novo arquivo foi criado!");
+        }
+        
         
         //cria as classes
         this.dadoUI = new DadoUI(40, 20);
@@ -131,11 +153,16 @@ public class YamUI extends JFrame implements MouseListener {
     }
         
     public void sincronizar() {
-	dadoUI.sincronizar(jogo.getJogada().getValoresDados(), jogo.getJogada().getMarcadosDados());
-	cartelaUI.sincronizar(jogo.getJogadorAtual().getCartela().getArrStatus(), 
-                jogo.getJogadorAtual().getCartela().getArrPontos());
-        botaoJogarUI.sincronizar(jogo.getPodeJogarDados());
-        jogadoresUI.sincronizar(jogo);
+	if (!flagTimerCartela) {
+            cartelaUI.sincronizar(jogo.getJogadorAtual().getCartela().getArrStatus(), 
+                    jogo.getJogadorAtual().getCartela().getArrPontos());
+            jogadoresUI.sincronizar(jogo);
+            dadoUI.sincronizar(jogo.getJogada().getValoresDados(), jogo.getJogada().getMarcadosDados());
+            botaoJogarUI.sincronizar(jogo.getPodeJogarDados());
+        } else {
+            cartelaUI.sincronizar(jogo.getJogadorAnterior().getCartela().getArrStatus(), 
+                    jogo.getJogadorAnterior().getCartela().getArrPontos());
+        }
         
         lblTotalNosDados.setText("Total nos dados: " + jogo.getTotalNosDados());
         lblJogada.setText("Jogadas restantes: " + (3 - jogo.getJogada().getSeqJogada()));
@@ -177,9 +204,14 @@ public class YamUI extends JFrame implements MouseListener {
                             case riscada:
                                 audioRisca();
                                 break;          
-                        }  
+                        }
+                        if (jogo.getQuantJogadores()>1) {
+                            flagTimerCartela = true;
+                            timerCartela.schedule(new TimerCartela(), 2 * 1000);
+                        }
+                        sincronizar();
                     }
-                    sincronizar();
+                    
                 }
             }
         }  
@@ -254,10 +286,12 @@ public class YamUI extends JFrame implements MouseListener {
 
         NovoJogoUI novoJogoUI = new NovoJogoUI(this);
         
-        jogo.definirJogadores (novoJogoUI.getJogadores());
-            
-        jogo.iniciarJogo();
-        sincronizar();
+        if (novoJogoUI.getJogadores() != null ) {
+            jogo.definirJogadores (novoJogoUI.getJogadores());
+
+            jogo.iniciarJogo();
+            sincronizar();
+        }
     }
     
     private void menuJogoRecordesUIClick(java.awt.event.ActionEvent evt) {
