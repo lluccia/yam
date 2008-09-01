@@ -98,7 +98,7 @@
     
     <target name="-pack" if="nsis.available">
         <nsis script="${basedir}/installer/Yam.nsi" path="C:\Program Files\NSIS">
-             <define name="PRODUCT_VERSION" value="0.1b"/>
+             <define name="PRODUCT_VERSION" value="0.2b"/>
              <define name="OUT_DIR" value="${basedir}\distFiles"/>
         </nsis>
     </target>

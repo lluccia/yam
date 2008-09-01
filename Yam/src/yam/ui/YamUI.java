@@ -1,5 +1,3 @@
-// TODO Acrescentar delay na demonstração da cartela após marcação para jogo multiplayer
-
 package yam.ui;
 
 import java.awt.*;
@@ -207,6 +205,7 @@ public class YamUI extends JFrame implements MouseListener {
                         }
                         if (jogo.getQuantJogadores()>1) {
                             flagTimerCartela = true;
+                            botaoJogarUI.sincronizar(false);
                             timerCartela.schedule(new TimerCartela(), 2 * 1000);
                         }
                         sincronizar();

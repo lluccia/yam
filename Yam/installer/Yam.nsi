@@ -63,6 +63,7 @@ Section "MainSection" SEC01
   
   SetOutPath "$INSTDIR\lib"
   File "..\dist\lib\AbsoluteLayout.jar"
+  File "..\dist\lib\beansbinding-1.2.1.jar"
   
   SetOutPath "$INSTDIR\sounds"
   File "..\dist\sounds\d1.au"
@@ -73,6 +74,7 @@ Section "MainSection" SEC01
   File "..\dist\sounds\marca.au"
   File "..\dist\sounds\risca.au"
 
+  SetOutPath "$INSTDIR"
   CreateDirectory "$STARTMENU\Yam!"
   CreateShortCut "$STARTMENU\Yam!\Yam!.lnk" "$INSTDIR\Yam.jar" "" "$INSTDIR\Yam.ico"
   CreateShortCut "$DESKTOP\Yam!.lnk" "$INSTDIR\Yam.jar" "" "$INSTDIR\Yam.ico"
@@ -113,6 +115,7 @@ Section Uninstall
   Delete "$INSTDIR\sounds\d1.au"
   Delete "$INSTDIR\README.TXT"
   Delete "$INSTDIR\lib\AbsoluteLayout.jar"
+  Delete "$INSTDIR\lib\beansbinding-1.2.1.jar"
   Delete "$INSTDIR\images\dados.png"
   Delete "$INSTDIR\images\cartela.png"
   Delete "$INSTDIR\images\btnJogar.png"
