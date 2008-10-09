@@ -75,8 +75,8 @@ Section "MainSection" SEC01
   File "..\dist\sounds\risca.au"
 
   SetOutPath "$INSTDIR"
-  CreateDirectory "$STARTMENU\Yam!"
-  CreateShortCut "$STARTMENU\Yam!\Yam!.lnk" "$INSTDIR\Yam.jar" "" "$INSTDIR\Yam.ico"
+  CreateDirectory "$SMPROGRAMS\Yam!"
+  CreateShortCut "$SMPROGRAMS\Yam!\Yam!.lnk" "$INSTDIR\Yam.jar" "" "$INSTDIR\Yam.ico"
   CreateShortCut "$DESKTOP\Yam!.lnk" "$INSTDIR\Yam.jar" "" "$INSTDIR\Yam.ico"
 SectionEnd
 
@@ -125,8 +125,8 @@ Section Uninstall
   Delete "$STARTMENU\Yam!\Yam!.lnk"
   Delete "$DESKTOP\Yam!.lnk"
 
-  RMDir "$STARTMENU\Yam!"
-  RMDir "$STARTMENU\Yam!"
+  RMDir "$SMPROGRAMS\Yam!"
+  RMDir "$SMPROGRAMS\Yam!"
   RMDir "$INSTDIR\sounds"
   RMDir "$INSTDIR\lib"
   RMDir "$INSTDIR\images"
