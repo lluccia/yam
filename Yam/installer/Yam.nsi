@@ -38,7 +38,7 @@
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "${OUT_DIR}\YamSetup.exe"
+OutFile "${OUT_DIR}\YamSetup_${PRODUCT_VERSION}.exe"
 InstallDir "$PROGRAMFILES\Yam!"
 ShowInstDetails show
 ShowUnInstDetails show

@@ -32,7 +32,6 @@ public class YamUI extends JFrame implements MouseListener {
     private Timer timerCartela; // utilizado para manter a exibição da cartela atual por alguns segundos na tela no jogo multiplayer
     private boolean flagTimerCartela; // indica se o timer está sendo executado
     
-    
     class TimerCartela extends TimerTask {
     public void run() {
         flagTimerCartela = false;
@@ -47,7 +46,7 @@ public class YamUI extends JFrame implements MouseListener {
         //inicialização do timer
         timerCartela = new Timer();
         flagTimerCartela = false;
-        
+
         //preparação do engine
         this.jogo = new Jogo();
         if (jogo.novosRecordesGerados()) {
@@ -160,11 +159,16 @@ public class YamUI extends JFrame implements MouseListener {
         } else {
             cartelaUI.sincronizar(jogo.getJogadorAnterior().getCartela().getArrStatus(), 
                     jogo.getJogadorAnterior().getCartela().getArrPontos());
+            jogadoresUI.sincronizar(jogo);
         }
         
         lblTotalNosDados.setText("Total nos dados: " + jogo.getTotalNosDados());
         lblJogada.setText("Jogadas restantes: " + (3 - jogo.getJogada().getSeqJogada()));
 	repaint();
+        if (jogo.getStatusDoJogo() == StatusDoJogo.finalizado) { 
+            exibeRecordes(); 
+
+        }
     }
 
     static public void main(String[] args) throws Exception {
@@ -176,41 +180,43 @@ public class YamUI extends JFrame implements MouseListener {
     }
     
     public void mousePressed(MouseEvent e) {
-        if (e.getButton()==MouseEvent.BUTTON1){
-            if (e.getComponent() == dadoUI ) {
-                int clickX = e.getX();
-                for (int i=0; i<5;i++) {
-                    if ( clickX >= Math.round(i*(DadoUI.dimDado*DadoUI.escalaDosDados + DadoUI.espacoEntreDados)) &
-                            clickX <= Math.round((i+1)*DadoUI.dimDado*DadoUI.escalaDosDados + i*DadoUI.espacoEntreDados )) {
-                        jogo.marcarDado(i);
-                        sincronizar();
-                        break;
+        if (jogo.getStatusDoJogo() == StatusDoJogo.emAndamento) {
+            if (e.getButton()==MouseEvent.BUTTON1){
+                if (e.getComponent() == dadoUI ) {
+                    int clickX = e.getX();
+                    for (int i=0; i<5;i++) {
+                        if ( clickX >= Math.round(i*(DadoUI.dimDado*DadoUI.escalaDosDados + DadoUI.espacoEntreDados)) &
+                                clickX <= Math.round((i+1)*DadoUI.dimDado*DadoUI.escalaDosDados + i*DadoUI.espacoEntreDados )) {
+                            jogo.marcarDado(i);
+                            sincronizar();
+                            break;
+                        }
                     }
-		}
-            }
-            else if (e.getComponent() == cartelaUI ) {
-                int col = e.getX() / CartelaUI.tamCelX;
-                int lin = e.getY() / CartelaUI.tamCelY;
+                }
+                else if (e.getComponent() == cartelaUI ) {
+                    int col = e.getX() / CartelaUI.tamCelX;
+                    int lin = e.getY() / CartelaUI.tamCelY;
 
-                if (col>0 & lin>0) {
-                    if (jogo.marcarPontos(TipoDeColuna.values()[col-1], TipoDeLinha.values()[lin-1])) {
-                        switch (jogo.getJogadorAtual().getCartela().
-                                getStatus(TipoDeColuna.values()[col-1], TipoDeLinha.values()[lin-1])) {
-                            case marcada:
-                                audioMarca();
-                                break;
-                            case riscada:
-                                audioRisca();
-                                break;          
+                    if (col>0 & lin>0) {
+                        if (jogo.marcarPontos(TipoDeColuna.values()[col-1], TipoDeLinha.values()[lin-1])) {
+                            switch (jogo.getJogadorAtual().getCartela().
+                                    getStatus(TipoDeColuna.values()[col-1], TipoDeLinha.values()[lin-1])) {
+                                case marcada:
+                                    audioMarca();
+                                    break;
+                                case riscada:
+                                    audioRisca();
+                                    break;          
+                            }
+                            if (jogo.getQuantJogadores()>1) {
+                                flagTimerCartela = true;
+                                botaoJogarUI.sincronizar(false);
+                                timerCartela.schedule(new TimerCartela(), 2 * 1000);
+                            }
+                            sincronizar();
                         }
-                        if (jogo.getQuantJogadores()>1) {
-                            flagTimerCartela = true;
-                            botaoJogarUI.sincronizar(false);
-                            timerCartela.schedule(new TimerCartela(), 2 * 1000);
-                        }
-                        sincronizar();
+
                     }
-                    
                 }
             }
         }  
@@ -286,22 +292,29 @@ public class YamUI extends JFrame implements MouseListener {
         NovoJogoUI novoJogoUI = new NovoJogoUI(this);
         
         if (novoJogoUI.getJogadores() != null ) {
+            
             jogo.definirJogadores (novoJogoUI.getJogadores());
-
+            
             jogo.iniciarJogo();
             sincronizar();
         }
     }
     
     private void menuJogoRecordesUIClick(java.awt.event.ActionEvent evt) {
-        JOptionPane.showMessageDialog(this, jogo.getRecordes().getStringRecordes(), "Recordes", JOptionPane.PLAIN_MESSAGE);
+        exibeRecordes();
     }
     
     private void botaoJogarUIClick(java.awt.event.ActionEvent evt) {
-        if (jogo.getPodeJogarDados()) {
+        if (jogo.getStatusDoJogo() == StatusDoJogo.emAndamento) {
+            if (jogo.getPodeJogarDados()) {
             jogo.jogarDados();
             audioDados(jogo.getQuantDadosLivres());
             sincronizar();     
+            }
         }
+    }
+    
+    private void exibeRecordes() {
+        JOptionPane.showMessageDialog(this, jogo.getRecordes().getStringRecordes(), "Recordes", JOptionPane.PLAIN_MESSAGE);
     }
 }

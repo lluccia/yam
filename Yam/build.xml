@@ -9,6 +9,8 @@
     <taskdef name="nsis" classname="net.sf.nsisant.Task">
         <classpath location="${basedir}/installer/nsisant-1.2.jar"/>
     </taskdef>
+    
+    <property name="release" value="0.21b"/> 
         
     <!--
 
@@ -86,9 +88,9 @@
        <mkdir dir="${basedir}/distFiles"/>
        
         <!-- Cria tar/gz para distribuição UNIX/LINUX -->
-        <tar destfile="${basedir}/distFiles/Yam.tar" basedir="${dist.dir}"/>
-        <gzip destfile="${basedir}/distFiles/Yam.tar.gz" src="${basedir}/distFiles/Yam.tar"/>
-        <delete file="${basedir}/distFiles/Yam.tar"/>
+        <tar destfile="${basedir}/distFiles/Yam_${release}.tar" basedir="${dist.dir}"/>
+        <gzip destfile="${basedir}/distFiles/Yam_${release}.tar.gz" src="${basedir}/distFiles/Yam_${release}.tar"/>
+        <delete file="${basedir}/distFiles/Yam_${release}.tar"/>
         
         <!-- Cria instalador para distribuição WINDOWS -->
         <available file="C:\Program Files\NSIS\makensis.exe" property="nsis.available" />
@@ -98,7 +100,7 @@
     
     <target name="-pack" if="nsis.available">
         <nsis script="${basedir}/installer/Yam.nsi" path="C:\Program Files\NSIS">
-             <define name="PRODUCT_VERSION" value="0.2b"/>
+             <define name="PRODUCT_VERSION" value="${release}"/>
              <define name="OUT_DIR" value="${basedir}\distFiles"/>
         </nsis>
     </target>

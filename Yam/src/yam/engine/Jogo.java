@@ -75,6 +75,7 @@ public class Jogo {
         } catch (Exception ex) {
             Logger.getLogger(Jogo.class.getName()).log(Level.SEVERE, null, ex);
         }
+        this.statusDoJogo = StatusDoJogo.finalizado;
     }
     
     public StatusDoJogo getStatusDoJogo() {
@@ -116,7 +117,7 @@ public class Jogo {
     public void proximoJogador() {
         this.jogadorAnterior = this.jogadorAtual;
         this.jogadorAtual = (this.jogadorAtual + 1) % this.quantJogadores;
-        
+        if (jogadorAtual == quantJogadores - 1 ) {ultimoJogador = true;}
     }
     
     public void jogarDados(){
@@ -142,7 +143,7 @@ public class Jogo {
             getJogadorAtual().getCartela().limpaStatus();
             
             if (ultimoJogador & getJogadorAtual().getCartela().cartelaCheia()) { 
-                finalizarJogo(); 
+                finalizarJogo();
             }
             
             return true;

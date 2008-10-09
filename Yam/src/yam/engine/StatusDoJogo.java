@@ -8,7 +8,9 @@ public enum StatusDoJogo {
 
     emAndamento,
 
-    finalizacao;
+    finalizacao,
+    
+    finalizado;
 
 }
 
