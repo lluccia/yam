@@ -56,9 +56,9 @@ public class YamUI extends JFrame implements MouseListener {
         
         //cria as classes
         this.dadoUI = new DadoUI(40, 20);
-	this.cartelaUI = new CartelaUI(20, 110);
-	this.botaoJogarUI = new BotaoJogarUI(330, 200);
-	this.jogadoresUI = new JogadoresUI(320, 300);
+        this.cartelaUI = new CartelaUI(20, 110);
+        this.botaoJogarUI = new BotaoJogarUI(330, 200);
+        this.jogadoresUI = new JogadoresUI(320, 300);
         
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -109,8 +109,8 @@ public class YamUI extends JFrame implements MouseListener {
         
         // configura comportamento da janela
         setLocationRelativeTo(null); // centraliza a janela
-	setVisible(true);
-	setResizable(false);
+        setVisible(true);
+        setResizable(false);
       
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -129,20 +129,20 @@ public class YamUI extends JFrame implements MouseListener {
         
         clipDados = new Clip[5];
         for (int i=0 ; i<5; i++) {
-            asDados[i] = AudioSystem.getAudioInputStream(new File("sounds/d" + (i+1) + ".au"));
+            asDados[i] = AudioSystem.getAudioInputStream(getClass().getResource("sounds/d" + (i+1) + ".au"));
             clipDados[i] = (Clip) AudioSystem.getLine(
                     new DataLine.Info(Clip.class, asDados[i].getFormat())
                     );
             clipDados[i].open(asDados[i]);
         }
 
-        asMarca = AudioSystem.getAudioInputStream(new File("sounds/marca.au"));
+        asMarca = AudioSystem.getAudioInputStream(getClass().getResource("sounds/marca.au"));
         clipMarca = (Clip) AudioSystem.getLine(
                     new DataLine.Info(Clip.class, asMarca.getFormat())
                     );
         clipMarca.open(asMarca);
         
-        asRisca = AudioSystem.getAudioInputStream(new File("sounds/risca.au"));
+        asRisca = AudioSystem.getAudioInputStream(getClass().getResource("sounds/risca.au"));
         clipRisca =(Clip) AudioSystem.getLine(
                     new DataLine.Info(Clip.class, asRisca.getFormat())
                     );

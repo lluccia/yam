@@ -40,7 +40,7 @@ public class BotaoJogarUI extends JComponent {
 	this.apertado = false;
 
 	try {
-	    imgBotao = ImageIO.read(new File("images/btnJogar.png"));
+	    imgBotao = ImageIO.read(getClass().getResource("images/btnJogar.png"));
 	} 
 	catch (IOException e) {
 	    e.printStackTrace();
