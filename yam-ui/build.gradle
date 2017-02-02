@@ -1,0 +1,9 @@
+apply plugin: 'application'
+
+mainClassName = "yam.ui.YamUI"
+
+dependencies {
+    compile project(':yam-engine')
+    compile 'org.jdesktop:beansbinding:1.2.1'
+    compile fileTree(dir: 'lib', include: '*.jar')
+}
