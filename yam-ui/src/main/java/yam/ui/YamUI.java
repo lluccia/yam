@@ -129,20 +129,20 @@ public class YamUI extends JFrame implements MouseListener {
         
         clipDados = new Clip[5];
         for (int i=0 ; i<5; i++) {
-            asDados[i] = AudioSystem.getAudioInputStream(getClass().getResource("sounds/d" + (i+1) + ".au"));
+            asDados[i] = AudioSystem.getAudioInputStream(getClass().getClassLoader().getResourceAsStream("sounds/d" + (i+1) + ".au"));
             clipDados[i] = (Clip) AudioSystem.getLine(
                     new DataLine.Info(Clip.class, asDados[i].getFormat())
                     );
             clipDados[i].open(asDados[i]);
         }
 
-        asMarca = AudioSystem.getAudioInputStream(getClass().getResource("sounds/marca.au"));
+        asMarca = AudioSystem.getAudioInputStream(getClass().getClassLoader().getResourceAsStream("sounds/marca.au"));
         clipMarca = (Clip) AudioSystem.getLine(
                     new DataLine.Info(Clip.class, asMarca.getFormat())
                     );
         clipMarca.open(asMarca);
         
-        asRisca = AudioSystem.getAudioInputStream(getClass().getResource("sounds/risca.au"));
+        asRisca = AudioSystem.getAudioInputStream(getClass().getClassLoader().getResourceAsStream("sounds/risca.au"));
         clipRisca =(Clip) AudioSystem.getLine(
                     new DataLine.Info(Clip.class, asRisca.getFormat())
                     );

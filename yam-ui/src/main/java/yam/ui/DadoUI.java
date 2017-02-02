@@ -40,7 +40,7 @@ public class DadoUI extends JComponent {
 	this.valores = new int[]{1,2,3,4,5};
 	
 	try {
-	    imgDados = ImageIO.read(getClass().getResource("images/dados.png"));
+	    imgDados = ImageIO.read(getClass().getClassLoader().getResourceAsStream("images/dados.png"));
 	} 
 	catch (IOException e) {
 	    
