@@ -1,23 +1,21 @@
 package yam.engine;
 
-
-
 public class Jogador {
 
     private Cartela cartela;
 
     private String nome;
 
-    public Jogador (String nome) {
+    public Jogador(String nome) {
         this.setNome(nome);
         this.setCartela(new Cartela());
     }
-    
-    public String getNome () {
+
+    public String getNome() {
         return nome;
     }
 
-    public void setNome (String val) {
+    public void setNome(String val) {
         this.nome = val;
     }
 
@@ -33,4 +31,3 @@ public class Jogador {
         return cartela.getTotalDePontos();
     }
 }
-

@@ -2,11 +2,12 @@ package yam.engine;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class Jogada {
 
-    private ArrayList<Dado> dados;
-   
+    private List<Dado> dados;
+
     private int pontosCombUm;
 
     private int pontosCombDois;
@@ -28,15 +29,15 @@ public class Jogada {
     private int pontosCombSeqMaxima;
 
     private int pontosCombMinDePontos;
-    
+
     private int pontosCombMaxDePontos;
-    
+
     private int pontosCombYam;
 
     private int totalNosDados;
-    
+
     private int seqJogada;
-   
+
     private boolean combUm;
 
     private boolean combDois;
@@ -59,33 +60,35 @@ public class Jogada {
 
     private boolean combYam;
 
-    public Jogada ()  {
-        dados=new ArrayList<Dado>(5);
-        for (int i=0; i<5; i++) {
-            dados.add(new Dado(i+1));
+    public Jogada() {
+        dados = new ArrayList<>(5);
+        for (int i = 0; i < 5; i++) {
+            dados.add(new Dado(i + 1));
         }
-        this.totalNosDados=15;
+        this.totalNosDados = 15;
         setSeqJogada(0);
     }
-        
-    /** 
-     * Joga os dados.
-     * Caso todos os dados estejam marcados para segurar, não efetiva a jogada.
+
+    /**
+     * Joga os dados. Caso todos os dados estejam marcados para segurar, não
+     * efetiva a jogada.
      */
-    public boolean jogarDados () {
-        //se todos os dados estiverem marcados, não efetua a jogada
-        int tmpTotalNosDados=0;
-        boolean todosMarcados=true;
-        for (Dado dadoAtual: dados) {
-            if (!dadoAtual.isMarcado()) {todosMarcados = false;}
+    public boolean jogarDados() {
+        // se todos os dados estiverem marcados, não efetua a jogada
+        int tmpTotalNosDados = 0;
+        boolean todosMarcados = true;
+        for (Dado dadoAtual : dados) {
+            if (!dadoAtual.isMarcado()) {
+                todosMarcados = false;
+            }
             dadoAtual.jogar();
-            tmpTotalNosDados+=dadoAtual.getValor();
+            tmpTotalNosDados += dadoAtual.getValor();
         }
         if (todosMarcados) {
             return false;
         } else {
             setTotalNosDados(tmpTotalNosDados);
-            setSeqJogada(getSeqJogada()+1);
+            setSeqJogada(getSeqJogada() + 1);
             ordenarDados();
             verificarCombinacoes();
             return true;
@@ -93,40 +96,42 @@ public class Jogada {
     }
 
     void desmarcarDados() {
-        for (Dado d: dados) {
+        for (Dado d : dados) {
             d.desmarcar();
         }
     }
 
     int getQuantDadosLivres() {
         int qtd = 0;
-        for (Dado d: dados) {
-            if (!d.isMarcado()) {qtd++;}
+        for (Dado d : dados) {
+            if (!d.isMarcado()) {
+                qtd++;
+            }
         }
         return qtd;
     }
-    
-    /** 
+
+    /**
      * Ordena os dados em ordem crescente
      */
-    private void ordenarDados () {
+    private void ordenarDados() {
         Dado dadoTmp;
-        for (int i=dados.size()-1; i>= 0; i--) {
-            for (int j=1; j<=i; j++) {
-                if (getValorDado(j-1) > getValorDado(j)) {
-                   dadoTmp = (Dado)dados.get(j-1);
-                   dados.set(j-1, (Dado)dados.get(j));
-                   dados.set(j,   (Dado)dadoTmp);
+        for (int i = dados.size() - 1; i >= 0; i--) {
+            for (int j = 1; j <= i; j++) {
+                if (getValorDado(j - 1) > getValorDado(j)) {
+                    dadoTmp = dados.get(j - 1);
+                    dados.set(j - 1, dados.get(j));
+                    dados.set(j, (Dado) dadoTmp);
                 }
             }
         }
     }
-    
-    /** 
+
+    /**
      * Verifica quais combinações podem ser marcadas com o resultado dos dados.
      */
-    private void verificarCombinacoes () {
-        //limpa combinacoes
+    private void verificarCombinacoes() {
+        // limpa combinacoes
         setCombUm(false);
         setCombDois(false);
         setCombTres(false);
@@ -149,44 +154,48 @@ public class Jogada {
         setPontosCombSeqMinima(0);
         setPontosCombSeqMaxima(0);
         setPontosCombYam(0);
-        
-        int tmpPontosCombUm=0;
-        int tmpPontosCombDois=0;
-        int tmpPontosCombTres=0;
-        int tmpPontosCombQuatro=0;
-        int tmpPontosCombCinco=0;
-        int tmpPontosCombSeis=0;
-        int tmpPontosCombQuadra=20; //
-        int tmpPontosCombFull=30;
-        int tmpPontosCombSeqMinima=35;
-        int tmpPontosCombSeqMaxima=40;
-        int tmpPontosCombYam=50;
-        
-        //verifica combUm a combSeis
+
+        int tmpPontosCombUm = 0;
+        int tmpPontosCombDois = 0;
+        int tmpPontosCombTres = 0;
+        int tmpPontosCombQuatro = 0;
+        int tmpPontosCombCinco = 0;
+        int tmpPontosCombSeis = 0;
+        int tmpPontosCombQuadra = 20; //
+        int tmpPontosCombFull = 30;
+        int tmpPontosCombSeqMinima = 35;
+        int tmpPontosCombSeqMaxima = 40;
+        int tmpPontosCombYam = 50;
+
+        // verifica combUm a combSeis
         Iterator<Dado> itr = this.dados.iterator();
         while (itr.hasNext()) {
             Dado dadoAtual = itr.next();
             switch (dadoAtual.getValor()) {
-                case 1:
-                    setCombUm(true);
-                    tmpPontosCombUm+=1;
-                    break;
-                case 2:
-                    setCombDois(true);
-                    tmpPontosCombDois+=2;
-                    break;
-                case 3:setCombTres(true);
-                    tmpPontosCombTres+=3;
-                    break;
-                case 4:setCombQuatro(true);
-                    tmpPontosCombQuatro+=4;
-                    break;
-                case 5:setCombCinco(true); 
-                    tmpPontosCombCinco+=5;
-                    break;
-                case 6:setCombSeis(true); 
-                    tmpPontosCombSeis+=6;
-                    break;
+            case 1:
+                setCombUm(true);
+                tmpPontosCombUm += 1;
+                break;
+            case 2:
+                setCombDois(true);
+                tmpPontosCombDois += 2;
+                break;
+            case 3:
+                setCombTres(true);
+                tmpPontosCombTres += 3;
+                break;
+            case 4:
+                setCombQuatro(true);
+                tmpPontosCombQuatro += 4;
+                break;
+            case 5:
+                setCombCinco(true);
+                tmpPontosCombCinco += 5;
+                break;
+            case 6:
+                setCombSeis(true);
+                tmpPontosCombSeis += 6;
+                break;
             }
         }
         setPontosCombUm(tmpPontosCombUm);
@@ -195,16 +204,15 @@ public class Jogada {
         setPontosCombQuatro(tmpPontosCombQuatro);
         setPontosCombCinco(tmpPontosCombCinco);
         setPontosCombSeis(tmpPontosCombSeis);
-        
-        //verifica combQuadra
-        if ( getValorDado(1) == getValorDado(2) &
-             getValorDado(2) == getValorDado(3) ) {
-            
+
+        // verifica combQuadra
+        if (getValorDado(1) == getValorDado(2) && getValorDado(2) == getValorDado(3)) {
+
             if (getValorDado(0) == getValorDado(1)) {
                 tmpPontosCombQuadra = 4 * getValorDado(0);
                 setCombQuadra(true);
                 setPontosCombQuadra(tmpPontosCombQuadra + 40);
-                
+
             }
 
             else if (getValorDado(3) == getValorDado(4)) {
@@ -213,188 +221,164 @@ public class Jogada {
                 setPontosCombQuadra(tmpPontosCombQuadra + 40);
             }
         }
-        
-        //verifica combFull
-        if (
-                (
-                    getValorDado(0) == getValorDado(1) &
-                    getValorDado(1) == getValorDado(2) &
-                    getValorDado(2) != getValorDado(3) &
-                    getValorDado(3) == getValorDado(4) 
-                ) |
-                (
-                    getValorDado(0) == getValorDado(1) &
-                    getValorDado(1) != getValorDado(2) &
-                    getValorDado(2) == getValorDado(3) &
-                    getValorDado(3) == getValorDado(4) 
-                    
-                ) 
-           ) {
+
+        // verifica combFull
+        if ((getValorDado(0) == getValorDado(1) && getValorDado(1) == getValorDado(2)
+                && getValorDado(2) != getValorDado(3) && getValorDado(3) == getValorDado(4))
+                || (getValorDado(0) == getValorDado(1) && getValorDado(1) != getValorDado(2)
+                        && getValorDado(2) == getValorDado(3) && getValorDado(3) == getValorDado(4)
+
+                )) {
             setCombFull(true);
-            tmpPontosCombFull+=getTotalNosDados();
+            tmpPontosCombFull += getTotalNosDados();
             setPontosCombFull(tmpPontosCombFull);
         }
-        
-        //verifica combSeqMinima
-        if (
-                    getValorDado(0) == 1 &
-                    getValorDado(1) == 2 &
-                    getValorDado(2) == 3 &
-                    getValorDado(3) == 4 &
-                    getValorDado(4) == 5
-           ) {
+
+        // verifica combSeqMinima
+        if (getValorDado(0) == 1 && getValorDado(1) == 2 && getValorDado(2) == 3 && getValorDado(3) == 4
+                && getValorDado(4) == 5) {
             setCombSeqMinima(true);
-            tmpPontosCombSeqMinima+=getTotalNosDados();
+            tmpPontosCombSeqMinima += getTotalNosDados();
             setPontosCombSeqMinima(tmpPontosCombSeqMinima);
         }
-        
-        //verifica combSeqMaxima
-        if (
-                    getValorDado(0) == 2 &
-                    getValorDado(1) == 3 &
-                    getValorDado(2) == 4 &
-                    getValorDado(3) == 5 &
-                    getValorDado(4) == 6
-           )
-        {
+
+        // verifica combSeqMaxima
+        if (getValorDado(0) == 2 && getValorDado(1) == 3 && getValorDado(2) == 4 && getValorDado(3) == 5
+                && getValorDado(4) == 6) {
             setCombSeqMaxima(true);
-            tmpPontosCombSeqMaxima+=getTotalNosDados();
+            tmpPontosCombSeqMaxima += getTotalNosDados();
             setPontosCombSeqMaxima(tmpPontosCombSeqMaxima);
         }
-        
-        //verifica combYam
-        if (
-                    getValorDado(0) == getValorDado(1) &
-                    getValorDado(1) == getValorDado(2) &
-                    getValorDado(2) == getValorDado(3) &
-                    getValorDado(3) == getValorDado(4) 
-           )
-        {
+
+        // verifica combYam
+        if (getValorDado(0) == getValorDado(1) && getValorDado(1) == getValorDado(2)
+                && getValorDado(2) == getValorDado(3) && getValorDado(3) == getValorDado(4)) {
             setCombYam(true);
-            tmpPontosCombYam+=getTotalNosDados();
+            tmpPontosCombYam += getTotalNosDados();
             setPontosCombYam(tmpPontosCombYam);
         }
-	
-	//sumariza pontos para mínimo e máximo de pontos
-	setPontosCombMinDePontos(getTotalNosDados());
-	setPontosCombMaxDePontos(getTotalNosDados());
+
+        // sumariza pontos para mínimo e máximo de pontos
+        setPontosCombMinDePontos(getTotalNosDados());
+        setPontosCombMaxDePontos(getTotalNosDados());
     }
-    
-    /** 
+
+    /**
      * Marca/desmarca o dado na posição desejada.
      * 
-     * @param posição do dado a marcar/desmarcar.
+     * @param posição
+     *            do dado a marcar/desmarcar.
      */
     public void marcarDado(int posicao) {
         this.dados.get(posicao).marcar();
     }
-    
-    /** 
+
+    /**
      * Zera o número sequencial da jogada.
      */
-    public void zeraSeqJogada () {
+    public void zeraSeqJogada() {
         this.setSeqJogada(0);
-        for (Dado d: dados) {
+        for (Dado d : dados) {
             d.desmarcar();
         }
     }
-    
-    public boolean getCombCinco () {
+
+    public boolean getCombCinco() {
         return combCinco;
     }
 
-    private void setCombCinco (boolean val) {
+    private void setCombCinco(boolean val) {
         this.combCinco = val;
     }
 
-    private void setCombDois (boolean val) {
+    private void setCombDois(boolean val) {
         this.combDois = val;
     }
 
-    public boolean getCombFull () {
+    public boolean getCombFull() {
         return combFull;
     }
 
-    private void setCombFull (boolean val) {
+    private void setCombFull(boolean val) {
         this.combFull = val;
     }
 
-    public boolean getCombQuadra () {
+    public boolean getCombQuadra() {
         return combQuadra;
     }
 
-    private void setCombQuadra (boolean val) {
+    private void setCombQuadra(boolean val) {
         this.combQuadra = val;
     }
 
-    public boolean getCombQuatro () {
+    public boolean getCombQuatro() {
         return combQuatro;
     }
 
-    private void setCombQuatro (boolean val) {
+    private void setCombQuatro(boolean val) {
         this.combQuatro = val;
     }
 
-    public boolean getCombSeis () {
+    public boolean getCombSeis() {
         return combSeis;
     }
 
-    private void setCombSeis (boolean val) {
+    private void setCombSeis(boolean val) {
         this.combSeis = val;
     }
 
-    public boolean getCombSeqMaxima () {
+    public boolean getCombSeqMaxima() {
         return combSeqMaxima;
     }
 
-    private void setCombSeqMaxima (boolean val) {
+    private void setCombSeqMaxima(boolean val) {
         this.combSeqMaxima = val;
     }
 
-    public boolean getCombSeqMinima () {
+    public boolean getCombSeqMinima() {
         return combSeqMinima;
     }
 
-    private void setCombSeqMinima (boolean val) {
+    private void setCombSeqMinima(boolean val) {
         this.combSeqMinima = val;
     }
 
-    public boolean getCombTres () {
+    public boolean getCombTres() {
         return combTres;
     }
 
-    private void setCombTres (boolean val) {
+    private void setCombTres(boolean val) {
         this.combTres = val;
     }
 
-    public boolean getCombYam () {
+    public boolean getCombYam() {
         return combYam;
     }
 
-    private void setCombYam (boolean val) {
+    private void setCombYam(boolean val) {
         this.combYam = val;
     }
 
-    public boolean getCombDois () {
+    public boolean getCombDois() {
         return combDois;
     }
 
-    public boolean getCombUm () {
+    public boolean getCombUm() {
         return combUm;
     }
 
-    private void setCombUm (boolean val) {
+    private void setCombUm(boolean val) {
         this.combUm = val;
     }
-    
-    public int getTotalNosDados () {
+
+    public int getTotalNosDados() {
         return totalNosDados;
     }
 
-    private void setTotalNosDados (int val) {
+    private void setTotalNosDados(int val) {
         this.totalNosDados = val;
     }
-   
+
     public int getSeqJogada() {
         return seqJogada;
     }
@@ -402,7 +386,7 @@ public class Jogada {
     private void setSeqJogada(int seqJogada) {
         this.seqJogada = seqJogada;
     }
-    
+
     public int getPontosCombCinco() {
         return pontosCombCinco;
     }
@@ -466,7 +450,7 @@ public class Jogada {
     private void setPontosCombSeqMinima(int pontosCombSeqMinima) {
         this.pontosCombSeqMinima = pontosCombSeqMinima;
     }
-    
+
     public int getPontosCombMinDePontos() {
         return pontosCombMinDePontos;
     }
@@ -482,6 +466,7 @@ public class Jogada {
     private void setPontosCombMaxDePontos(int pontosCombMaxDePontos) {
         this.pontosCombMaxDePontos = pontosCombMaxDePontos;
     }
+
     public int getPontosCombTres() {
         return pontosCombTres;
     }
@@ -505,127 +490,127 @@ public class Jogada {
     private void setPontosCombYam(int pontosCombYam) {
         this.pontosCombYam = pontosCombYam;
     }
-    
+
     public int getValorDado(int dado) {
         return dados.get(dado).getValor();
     }
-    
+
     public int[] getValoresDados() {
-	int[] ret = new int[5];
-	for (int i=0;i<5;i++){
-	    ret[i]=this.dados.get(i).getValor();
-	}
-	return ret;
+        int[] ret = new int[5];
+        for (int i = 0; i < 5; i++) {
+            ret[i] = this.dados.get(i).getValor();
+        }
+        return ret;
     }
-    
+
     public boolean[] getMarcadosDados() {
-	boolean[] ret = new boolean[5];
-	for (int i=0;i<5;i++){
-	    ret[i]=this.dados.get(i).isMarcado();
-	}
-	return ret;
+        boolean[] ret = new boolean[5];
+        for (int i = 0; i < 5; i++) {
+            ret[i] = this.dados.get(i).isMarcado();
+        }
+        return ret;
     }
-    
+
     public int getPontosComb(TipoDeLinha linha) {
         switch (linha) {
-            case um:
-                return pontosCombUm;
-            case dois:
-                return pontosCombDois;
-            case tres:
-                return pontosCombTres;
-            case quatro:
-                return pontosCombQuatro;
-            case cinco:
-                return pontosCombCinco;
-            case seis:
-                return pontosCombSeis;
-            case quadra:
-                return pontosCombQuadra;
-            case full:
-                return pontosCombFull;
-            case seqMinima:
-                return pontosCombSeqMinima;
-            case seqMaxima:
-                return pontosCombSeqMaxima;
-            case minDePontos:
-                return pontosCombMinDePontos;
-            case maxDePontos:
-                return pontosCombMaxDePontos;
-            case yam:
-                return pontosCombYam;
+        case UM:
+            return pontosCombUm;
+        case DOIS:
+            return pontosCombDois;
+        case TRES:
+            return pontosCombTres;
+        case QUATRO:
+            return pontosCombQuatro;
+        case CINCO:
+            return pontosCombCinco;
+        case SEIS:
+            return pontosCombSeis;
+        case QUADRA:
+            return pontosCombQuadra;
+        case FULL:
+            return pontosCombFull;
+        case SEQ_MINIMA:
+            return pontosCombSeqMinima;
+        case SEQ_MAXIMA:
+            return pontosCombSeqMaxima;
+        case minDePontos:
+            return pontosCombMinDePontos;
+        case maxDePontos:
+            return pontosCombMaxDePontos;
+        case YAM:
+            return pontosCombYam;
         }
         return 0;
     }
-    
-    public ArrayList<Dado> getDado() {
+
+    public List<Dado> getDado() {
         return dados;
     }
-    
+
     public String getJogada() {
-	String retString="";
-	for (Dado d: dados) {
-	    retString=retString.concat(Integer.toString(d.getValor()));
-	    retString=retString.concat(" ");
-	}
-	return retString;
+        String retString = "";
+        for (Dado d : dados) {
+            retString = retString.concat(Integer.toString(d.getValor()));
+            retString = retString.concat(" ");
+        }
+        return retString;
     }
-    
+
     public boolean verificaCombinacao(TipoDeLinha tpLinha) {
-	switch (tpLinha) {
-	    case um:
-		return getCombUm();
-	    case dois:
-		return getCombDois();
-	    case tres:
-		return getCombTres();
-	    case quatro:
-		return getCombQuatro();
-	    case cinco:
-		return getCombCinco();
-	    case seis:
-		return getCombSeis();
-	    case quadra:
-		return getCombQuadra();
-	    case full:
-		return getCombFull();
-	    case seqMinima:
-		return getCombSeqMinima();
-	    case seqMaxima:
-		return getCombSeqMaxima();
-	    case yam:
-		return getCombYam();
-	    default:
-		return false;
-	}
+        switch (tpLinha) {
+        case UM:
+            return getCombUm();
+        case DOIS:
+            return getCombDois();
+        case TRES:
+            return getCombTres();
+        case QUATRO:
+            return getCombQuatro();
+        case CINCO:
+            return getCombCinco();
+        case SEIS:
+            return getCombSeis();
+        case QUADRA:
+            return getCombQuadra();
+        case FULL:
+            return getCombFull();
+        case SEQ_MINIMA:
+            return getCombSeqMinima();
+        case SEQ_MAXIMA:
+            return getCombSeqMaxima();
+        case YAM:
+            return getCombYam();
+        default:
+            return false;
+        }
     }
-    
+
     public int verificaPontosCombinacao(TipoDeLinha tpLinha) {
-	switch (tpLinha) {
-	    case um:
-		return getPontosCombUm();
-	    case dois:
-		return getPontosCombDois();
-	    case tres:
-		return getPontosCombTres();
-	    case quatro:
-		return getPontosCombQuatro();
-	    case cinco:
-		return getPontosCombCinco();
-	    case seis:
-		return getPontosCombSeis();
-	    case quadra:
-		return getPontosCombQuadra();
-	    case full:
-		return getPontosCombFull();
-	    case seqMinima:
-		return getPontosCombSeqMinima();
-	    case seqMaxima:
-		return getPontosCombSeqMaxima();
-	    case yam:
-		return getPontosCombYam();
-	    default:
-		return 0;
-	}
+        switch (tpLinha) {
+        case UM:
+            return getPontosCombUm();
+        case DOIS:
+            return getPontosCombDois();
+        case TRES:
+            return getPontosCombTres();
+        case QUATRO:
+            return getPontosCombQuatro();
+        case CINCO:
+            return getPontosCombCinco();
+        case SEIS:
+            return getPontosCombSeis();
+        case QUADRA:
+            return getPontosCombQuadra();
+        case FULL:
+            return getPontosCombFull();
+        case SEQ_MINIMA:
+            return getPontosCombSeqMinima();
+        case SEQ_MAXIMA:
+            return getPontosCombSeqMaxima();
+        case YAM:
+            return getPontosCombYam();
+        default:
+            return 0;
+        }
     }
 }

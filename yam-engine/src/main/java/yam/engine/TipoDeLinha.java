@@ -1,41 +1,22 @@
 package yam.engine;
 
-
 public enum TipoDeLinha {
-
-    um,
-
-    dois,
-
-    tres,
-
-    quatro,
-
-    cinco,
-
-    seis,
-
+    UM,
+    DOIS,
+    TRES,
+    QUATRO,
+    CINCO,
+    SEIS,
     primeiroTotal,
-
     bonus,
-
     segundoTotal,
-
-    quadra,
-
-    full,
-
-    seqMinima,
-
-    seqMaxima,
-
+    QUADRA,
+    FULL,
+    SEQ_MINIMA,
+    SEQ_MAXIMA,
     minDePontos,
-
     maxDePontos,
-
-    yam,
-
+    YAM,
     terceiroTotal,
-    
     segundoEterceiroTotais;
 }

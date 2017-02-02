@@ -1,16 +1,9 @@
 package yam.engine;
 
-
-
 public enum StatusDoJogo {
-
-    inicializacao,
-
-    emAndamento,
-
-    finalizacao,
-    
-    finalizado;
-
+    INICIALIZACAO,
+    EM_ANDAMENTO,
+    FINALIZACAO,
+    FINALIZADO;
 }
 

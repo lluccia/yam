@@ -40,7 +40,7 @@ public class CartelaUI extends JComponent {
 	
 	for (int i=0;i<4;i++) {
 	    for (int j=0;j<20;j++) {
-		statusDasLinhas[i][j]=StatusDaLinha.livre;
+		statusDasLinhas[i][j]=StatusDaLinha.LIVRE;
 	    }
 	}
         
@@ -95,19 +95,19 @@ public class CartelaUI extends JComponent {
 		    else{
 			if (i!=0 & j!=0 & j<19){
 			    switch (statusDasLinhas[i-1][j-1]) {
-				case livre:
+				case LIVRE:
 				    g.setColor(clrLightYellow);    
 				    break;
-                                case marcada:
+                                case MARCADA:
 				    g.setColor(clrLightYellow);    
 				    break;
-                                case riscada:
+                                case RISCADA:
 				    g.setColor(clrLightYellow);    
 				    break;
-				case marcavel:
+				case MARCAVEL:
 				    g.setColor(clrLightGreen);    
 				    break;
-				case riscavel:
+				case RISCAVEL:
 				    g.setColor(clrLightRed);
 				    break;
 			    }
@@ -138,8 +138,8 @@ public class CartelaUI extends JComponent {
 		
 		//escreve pontos
 		if (i > 0 & j > 0 ) {
-                    if (statusDasLinhas[i-1][j-1] == StatusDaLinha.marcada  |
-                            statusDasLinhas[i-1][j-1] == StatusDaLinha.riscada ) {
+                    if (statusDasLinhas[i-1][j-1] == StatusDaLinha.MARCADA  |
+                            statusDasLinhas[i-1][j-1] == StatusDaLinha.RISCADA ) {
                         
                         //define cores dos textos
                         if ( (j > 6 & j < 10) | j > 16) {
@@ -153,7 +153,7 @@ public class CartelaUI extends JComponent {
                         char[] marca;
                         int lblPosX,lblPosY;
                         
-                        if (statusDasLinhas[i-1][j-1] == StatusDaLinha.riscada) {
+                        if (statusDasLinhas[i-1][j-1] == StatusDaLinha.RISCADA) {
                             String tmp = "---";
                             marca = tmp.toCharArray();
                         } else {

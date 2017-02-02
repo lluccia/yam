@@ -165,7 +165,7 @@ public class YamUI extends JFrame implements MouseListener {
         lblTotalNosDados.setText("Total nos dados: " + jogo.getTotalNosDados());
         lblJogada.setText("Jogadas restantes: " + (3 - jogo.getJogada().getSeqJogada()));
 	repaint();
-        if (jogo.getStatusDoJogo() == StatusDoJogo.finalizado) { 
+        if (jogo.getStatusDoJogo() == StatusDoJogo.FINALIZADO) { 
             exibeRecordes(); 
 
         }
@@ -180,7 +180,7 @@ public class YamUI extends JFrame implements MouseListener {
     }
     
     public void mousePressed(MouseEvent e) {
-        if (jogo.getStatusDoJogo() == StatusDoJogo.emAndamento) {
+        if (jogo.getStatusDoJogo() == StatusDoJogo.EM_ANDAMENTO) {
             if (e.getButton()==MouseEvent.BUTTON1){
                 if (e.getComponent() == dadoUI ) {
                     int clickX = e.getX();
@@ -201,10 +201,10 @@ public class YamUI extends JFrame implements MouseListener {
                         if (jogo.marcarPontos(TipoDeColuna.values()[col-1], TipoDeLinha.values()[lin-1])) {
                             switch (jogo.getJogadorAtual().getCartela().
                                     getStatus(TipoDeColuna.values()[col-1], TipoDeLinha.values()[lin-1])) {
-                                case marcada:
+                                case MARCADA:
                                     audioMarca();
                                     break;
-                                case riscada:
+                                case RISCADA:
                                     audioRisca();
                                     break;          
                             }
@@ -305,7 +305,7 @@ public class YamUI extends JFrame implements MouseListener {
     }
     
     private void botaoJogarUIClick(java.awt.event.ActionEvent evt) {
-        if (jogo.getStatusDoJogo() == StatusDoJogo.emAndamento) {
+        if (jogo.getStatusDoJogo() == StatusDoJogo.EM_ANDAMENTO) {
             if (jogo.getPodeJogarDados()) {
             jogo.jogarDados();
             audioDados(jogo.getQuantDadosLivres());

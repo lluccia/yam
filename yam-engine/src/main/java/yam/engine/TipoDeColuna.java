@@ -1,16 +1,9 @@
 package yam.engine;
 
-
-
 public enum TipoDeColuna {
-
-    desce,
-
-    sobe,
-
-    desordem,
-
-    seco;
-
+    DESCE,
+    SOBE,
+    DESORDEM,
+    SECO;
 }
 
