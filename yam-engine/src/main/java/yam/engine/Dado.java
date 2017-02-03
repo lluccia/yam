@@ -1,6 +1,5 @@
 package yam.engine;
 
-
 import java.util.Random;
 
 public class Dado {
@@ -9,49 +8,40 @@ public class Dado {
 
     private int valor;
 
-    private boolean marcado;
+    private boolean segurado;
 
-    public Dado () {
+    public Dado() {
         geradorRandomico = new Random();
-        this.setMarcado(false);
-        this.setValor(geradorRandomico.nextInt(6)+1);
+        segurado = false;
+        valor = geradorRandomico.nextInt(6) + 1;
     }
-    
-    public Dado (int valor) {
+
+    public Dado(int valor) {
         geradorRandomico = new Random();
-        this.setMarcado(false);
-        this.setValor(valor);
+        segurado = false;
+        this.valor = valor;
     }
-        
-    public int getValor () {
+
+    public int getValor() {
         return valor;
     }
 
-    public void jogar () {
-        if ( !this.isMarcado() ){
-            this.setValor(geradorRandomico.nextInt(6)+1);
+    public void jogar() {
+        if (!this.isMarcado()) {
+            valor = geradorRandomico.nextInt(6) + 1;
         }
     }
 
-    public void marcar () {
-        this.setMarcado( !this.isMarcado() );
-    }
-    
-    public void desmarcar () {
-        this.setMarcado( false );
+    public void marcar() {
+        segurado = !segurado;
     }
 
-    private void setMarcado (boolean val) {
-        this.marcado = val;
+    public void desmarcar() {
+        segurado = false;
     }
 
-    private void setValor (int val) {
-        this.valor = val;
-    }
-
-    public boolean isMarcado () {
-        return marcado;
+    public boolean isMarcado() {
+        return segurado;
     }
 
 }
-

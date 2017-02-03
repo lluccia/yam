@@ -14,12 +14,13 @@ public class Coluna {
     private TipoDeColuna tipoDeColuna;
 
     public Coluna(TipoDeColuna tipo) {
-        this.setTipoDeColuna(tipo);
+        this.tipoDeColuna = tipo;
         this.linhas = new ArrayList<>();
         for (TipoDeLinha tipoDeLinha : EnumSet.allOf(TipoDeLinha.class)) {
             linhas.add(new Linha(tipoDeLinha));
         }
     }
+    
 
     /**
      * Marca pontos na linha especificada. Caso não seja possível marcar pontos
@@ -40,11 +41,11 @@ public class Coluna {
             int pontos;
 
             switch (tpLinha) {
-            case minDePontos:
+            case MIN_DE_PONTOS:
                 pontos = jog.getTotalNosDados();
                 minDePontos = pontos;
                 break;
-            case maxDePontos:
+            case MAX_DE_PONTOS:
                 pontos = jog.getTotalNosDados();
                 maxDePontos = pontos;
                 break;
@@ -73,13 +74,7 @@ public class Coluna {
      *            possíveis.
      */
     public void verificarMarcacoes(Jogada jogada) {
-        // limpa status das marcações possíveis anteriores
-        for (Linha linha : linhas) {
-            if (linha.getStatusDaLinha() == StatusDaLinha.MARCAVEL
-                    || linha.getStatusDaLinha() == StatusDaLinha.RISCAVEL) {
-                linha.setStatusDaLinha(StatusDaLinha.LIVRE);
-            }
-        }
+        limpaMarcacoes();
 
         switch (tipoDeColuna) {
         case DESCE:
@@ -89,9 +84,9 @@ public class Coluna {
                 }
                 if (linhas.get(i).getStatusDaLinha() == StatusDaLinha.LIVRE) {
                     // verifica mínimo e máximo de pontos
-                    if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.minDePontos) {
+                    if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.MIN_DE_PONTOS) {
                         linhas.get(i).setStatusDaLinha(StatusDaLinha.MARCAVEL);
-                    } else if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.maxDePontos) {
+                    } else if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.MAX_DE_PONTOS) {
                         if (jogada.getTotalNosDados() > minDePontos) {
                             linhas.get(i).setStatusDaLinha(StatusDaLinha.MARCAVEL);
                         } else {
@@ -115,9 +110,9 @@ public class Coluna {
                 }
                 if (linhas.get(i).getStatusDaLinha() == StatusDaLinha.LIVRE) {
                     // verifica mínimo e máximo de pontos
-                    if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.maxDePontos) {
+                    if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.MAX_DE_PONTOS) {
                         linhas.get(i).setStatusDaLinha(StatusDaLinha.MARCAVEL);
-                    } else if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.minDePontos) {
+                    } else if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.MIN_DE_PONTOS) {
                         if (jogada.getTotalNosDados() < maxDePontos) {
                             linhas.get(i).setStatusDaLinha(StatusDaLinha.MARCAVEL);
                         } else {
@@ -141,13 +136,13 @@ public class Coluna {
                 }
                 if (linhas.get(i).getStatusDaLinha() == StatusDaLinha.LIVRE) {
                     // verifica mínimo e máximo de pontos
-                    if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.minDePontos) {
+                    if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.MIN_DE_PONTOS) {
                         if (maxDePontos == 0 || jogada.getTotalNosDados() < maxDePontos) {
                             linhas.get(i).setStatusDaLinha(StatusDaLinha.MARCAVEL);
                         } else {
                             linhas.get(i).setStatusDaLinha(StatusDaLinha.RISCAVEL);
                         }
-                    } else if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.maxDePontos) {
+                    } else if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.MAX_DE_PONTOS) {
                         if (minDePontos == 0 || jogada.getTotalNosDados() > minDePontos) {
                             linhas.get(i).setStatusDaLinha(StatusDaLinha.MARCAVEL);
                         } else {
@@ -170,14 +165,14 @@ public class Coluna {
                 }
                 if (linhas.get(i).getStatusDaLinha() == StatusDaLinha.LIVRE) {
                     // verifica mínimo e máximo de pontos
-                    if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.minDePontos) {
+                    if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.MIN_DE_PONTOS) {
                         if (jogada.getSeqJogada() == 1
                                 && (maxDePontos == 0 || jogada.getTotalNosDados() < maxDePontos)) {
                             linhas.get(i).setStatusDaLinha(StatusDaLinha.MARCAVEL);
                         } else {
                             linhas.get(i).setStatusDaLinha(StatusDaLinha.RISCAVEL);
                         }
-                    } else if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.maxDePontos) {
+                    } else if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.MAX_DE_PONTOS) {
                         if (jogada.getSeqJogada() == 1
                                 && (minDePontos == 0 || jogada.getTotalNosDados() > minDePontos)) {
                             linhas.get(i).setStatusDaLinha(StatusDaLinha.MARCAVEL);
@@ -197,20 +192,16 @@ public class Coluna {
         }
     }
 
-    public TipoDeColuna getTipoDeColuna() {
-        return tipoDeColuna;
+
+    private void limpaMarcacoes() {
+        for (Linha linha : linhas) {
+            linha.limpaMarcacao();
+        }
     }
 
-    public void setTipoDeColuna(TipoDeColuna val) {
-        this.tipoDeColuna = val;
-    }
 
     public List<Linha> getLinhas() {
         return linhas;
-    }
-
-    public void setLinhas(List<Linha> val) {
-        this.linhas = val;
     }
 
     /**
@@ -223,10 +214,11 @@ public class Coluna {
         boolean cheia = true;
 
         for (Linha linha : linhas) {
-            if (linha.getTipoDeLinha() != TipoDeLinha.primeiroTotal && linha.getTipoDeLinha() != TipoDeLinha.bonus
-                    && linha.getTipoDeLinha() != TipoDeLinha.segundoTotal
-                    && linha.getTipoDeLinha() != TipoDeLinha.terceiroTotal
-                    && linha.getTipoDeLinha() != TipoDeLinha.segundoEterceiroTotais) {
+            if (linha.getTipoDeLinha() != TipoDeLinha.PRIMEIRO_TOTAL
+                    && linha.getTipoDeLinha() != TipoDeLinha.BONUS
+                    && linha.getTipoDeLinha() != TipoDeLinha.SEGUNDO_TOTAL
+                    && linha.getTipoDeLinha() != TipoDeLinha.TERCEIRO_TOTAL
+                    && linha.getTipoDeLinha() != TipoDeLinha.SEGUNDO_E_TERCEIRO_TOTAIS) {
 
                 if (linha.getStatusDaLinha() != StatusDaLinha.MARCADA
                         && linha.getStatusDaLinha() != StatusDaLinha.RISCADA) {
@@ -269,23 +261,23 @@ public class Coluna {
         for (int i = TipoDeLinha.UM.ordinal(); i <= TipoDeLinha.SEIS.ordinal(); i++) {
             temp1 += linhas.get(i).getPontos();
         }
-        linhas.get(TipoDeLinha.primeiroTotal.ordinal()).setPontos(temp1);
+        linhas.get(TipoDeLinha.PRIMEIRO_TOTAL.ordinal()).setPontos(temp1);
 
         // verifica se possui pontos suficientes para bonus
         if (temp1 >= 60) {
-            linhas.get(TipoDeLinha.bonus.ordinal()).setPontos(30);
+            linhas.get(TipoDeLinha.BONUS.ordinal()).setPontos(30);
         } else {
-            linhas.get(TipoDeLinha.bonus.ordinal()).setPontos(0);
+            linhas.get(TipoDeLinha.BONUS.ordinal()).setPontos(0);
         }
 
-        temp1 += linhas.get(TipoDeLinha.bonus.ordinal()).getPontos();
-        linhas.get(TipoDeLinha.segundoTotal.ordinal()).setPontos(temp1);
+        temp1 += linhas.get(TipoDeLinha.BONUS.ordinal()).getPontos();
+        linhas.get(TipoDeLinha.SEGUNDO_TOTAL.ordinal()).setPontos(temp1);
 
         for (int i = TipoDeLinha.QUADRA.ordinal(); i <= TipoDeLinha.YAM.ordinal(); i++) {
             temp2 += linhas.get(i).getPontos();
         }
-        linhas.get(TipoDeLinha.terceiroTotal.ordinal()).setPontos(temp2);
+        linhas.get(TipoDeLinha.TERCEIRO_TOTAL.ordinal()).setPontos(temp2);
 
-        linhas.get(TipoDeLinha.segundoEterceiroTotais.ordinal()).setPontos(temp1 + temp2);
+        linhas.get(TipoDeLinha.SEGUNDO_E_TERCEIRO_TOTAIS.ordinal()).setPontos(temp1 + temp2);
     }
 }

@@ -533,9 +533,9 @@ public class Jogada {
             return pontosCombSeqMinima;
         case SEQ_MAXIMA:
             return pontosCombSeqMaxima;
-        case minDePontos:
+        case MIN_DE_PONTOS:
             return pontosCombMinDePontos;
-        case maxDePontos:
+        case MAX_DE_PONTOS:
             return pontosCombMaxDePontos;
         case YAM:
             return pontosCombYam;

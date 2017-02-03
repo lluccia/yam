@@ -45,4 +45,11 @@ public class Linha {
     public void setTipoDeLinha(TipoDeLinha val) {
         this.tipoDeLinha = val;
     }
+
+    void limpaMarcacao() {
+        if (getStatusDaLinha() == StatusDaLinha.MARCAVEL
+                || getStatusDaLinha() == StatusDaLinha.RISCAVEL) {
+            setStatusDaLinha(StatusDaLinha.LIVRE);
+        }
+    }
 }

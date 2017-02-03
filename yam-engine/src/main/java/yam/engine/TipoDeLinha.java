@@ -7,16 +7,19 @@ public enum TipoDeLinha {
     QUATRO,
     CINCO,
     SEIS,
-    primeiroTotal,
-    bonus,
-    segundoTotal,
+    
+    PRIMEIRO_TOTAL,
+    BONUS,
+    SEGUNDO_TOTAL,
+    
     QUADRA,
     FULL,
     SEQ_MINIMA,
     SEQ_MAXIMA,
-    minDePontos,
-    maxDePontos,
+    MIN_DE_PONTOS,
+    MAX_DE_PONTOS,
     YAM,
-    terceiroTotal,
-    segundoEterceiroTotais;
+    
+    TERCEIRO_TOTAL,
+    SEGUNDO_E_TERCEIRO_TOTAIS;
 }

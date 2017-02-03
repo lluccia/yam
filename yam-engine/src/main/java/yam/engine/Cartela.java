@@ -59,7 +59,7 @@ public class Cartela {
         int temp = 0;
 
         for (TipoDeColuna col : TipoDeColuna.values()) {
-            temp += getPontos(col, TipoDeLinha.segundoEterceiroTotais);
+            temp += getPontos(col, TipoDeLinha.SEGUNDO_E_TERCEIRO_TOTAIS);
         }
 
         this.setTotalDePontos(temp);
@@ -123,8 +123,8 @@ public class Cartela {
 
         for (TipoDeColuna col : TipoDeColuna.values()) {
             for (TipoDeLinha lin : TipoDeLinha.values()) {
-                if ((lin == TipoDeLinha.primeiroTotal || lin == TipoDeLinha.bonus || lin == TipoDeLinha.segundoTotal
-                        || lin == TipoDeLinha.terceiroTotal || lin == TipoDeLinha.segundoEterceiroTotais)
+                if ((lin == TipoDeLinha.PRIMEIRO_TOTAL || lin == TipoDeLinha.BONUS || lin == TipoDeLinha.SEGUNDO_TOTAL
+                        || lin == TipoDeLinha.TERCEIRO_TOTAL || lin == TipoDeLinha.SEGUNDO_E_TERCEIRO_TOTAIS)
                         && getPontos(col, lin) > 0) {
                     retArray[col.ordinal()][lin.ordinal()] = StatusDaLinha.MARCADA;
                 } else {

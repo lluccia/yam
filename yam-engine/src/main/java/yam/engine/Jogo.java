@@ -38,7 +38,7 @@ public class Jogo {
 
     private boolean ultimoJogador;
 
-    public Jogo() throws Exception {
+    public Jogo() {
         this.statusDoJogo = StatusDoJogo.INICIALIZACAO;
         this.jogadores = new ArrayList<>();
         this.jogada = new Jogada();
