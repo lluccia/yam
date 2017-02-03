@@ -15,6 +15,14 @@ import java.util.logging.Logger;
 
 public class Jogo {
 
+    public class InicioSemJogadoresException extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+    }
+
+    public class JogadorExistenteException extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+    }
+
     public StatusDoJogo statusDoJogo;
 
     private List<Jogador> jogadores;
@@ -29,8 +37,6 @@ public class Jogo {
 
     private int jogadorAtual = 0;
     private int jogadorAnterior = 0;
-
-    private int quantJogadores;
 
     private Recordes recordes;
 
@@ -52,8 +58,22 @@ public class Jogo {
         leArquivoDeRecordes();
     }
 
+    public void adicionarJogador(String nomeJogador) {
+        Jogador jogador = new Jogador(nomeJogador);
+    
+        if(jogadores.contains(jogador))
+            throw new JogadorExistenteException();
+        
+        jogadores.add(jogador);
+    }
+
+    public void removerJogador(String nomeJogador) {
+        jogadores.remove(new Jogador(nomeJogador));
+        
+    }
+
+    @Deprecated
     public void definirJogadores(String[] nomes) {
-        this.quantJogadores = nomes.length;
         this.jogadores.clear();
         for (String nom : nomes) {
             this.jogadores.add(new Jogador(nom));
@@ -61,6 +81,9 @@ public class Jogo {
     }
 
     public void iniciarJogo() {
+        if(getQuantJogadores() == 0)
+            throw new InicioSemJogadoresException();
+            
         this.statusDoJogo = StatusDoJogo.EM_ANDAMENTO;
         for (Jogador j : jogadores) {
             j.getCartela().limpaCartela();
@@ -95,7 +118,7 @@ public class Jogo {
     }
 
     public String[][] getJogadores() {
-        String[][] tmp = new String[quantJogadores][2];
+        String[][] tmp = new String[getQuantJogadores()][2];
         int i = 0;
 
         for (Jogador j : jogadores) {
@@ -124,8 +147,8 @@ public class Jogo {
 
     public void proximoJogador() {
         this.jogadorAnterior = this.jogadorAtual;
-        this.jogadorAtual = (this.jogadorAtual + 1) % this.quantJogadores;
-        if (jogadorAtual == quantJogadores - 1) {
+        this.jogadorAtual = (this.jogadorAtual + 1) % getQuantJogadores();
+        if (jogadorAtual == getQuantJogadores() - 1) {
             ultimoJogador = true;
         }
     }
@@ -225,12 +248,8 @@ public class Jogo {
         return novosRecordesGerados;
     }
 
-    public boolean ultimoJogador() {
-        return ultimoJogador;
-    }
-
     public int getQuantJogadores() {
-        return quantJogadores;
+        return jogadores.size();
     }
 
 }
