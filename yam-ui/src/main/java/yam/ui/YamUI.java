@@ -227,7 +227,7 @@ public class YamUI extends JFrame implements MouseListener {
                             if (jogo.getQuantJogadores() > 1) {
                                 flagTimerCartela = true;
                                 botaoJogarUI.sincronizar(false);
-                                timerCartela.schedule(new TimerCartela(), 2 * 1000);
+                                timerCartela.schedule(new TimerCartela(), 2 * 1000L);
                             }
                             sincronizar();
                         }

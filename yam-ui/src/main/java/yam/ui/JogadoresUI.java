@@ -46,7 +46,7 @@ public class JogadoresUI extends JComponent {
     }
     
     public void sincronizar(Jogo j) {
-        jogadores = j.getJogadores();
+        jogadores = j.getJogadoresComTotalDePontos();
         jogadorAtual = j.getIntJogadorAtual();
     }
 }

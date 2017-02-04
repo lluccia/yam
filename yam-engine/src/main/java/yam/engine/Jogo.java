@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,7 +24,7 @@ public class Jogo {
         private static final long serialVersionUID = 1L;
     }
 
-    public StatusDoJogo statusDoJogo;
+    private StatusDoJogo statusDoJogo;
 
     private List<Jogador> jogadores;
 
@@ -60,18 +61,21 @@ public class Jogo {
 
     public void adicionarJogador(String nomeJogador) {
         Jogador jogador = new Jogador(nomeJogador);
-    
-        if(jogadores.contains(jogador))
+
+        if (jogadores.contains(jogador))
             throw new JogadorExistenteException();
-        
+
         jogadores.add(jogador);
     }
 
     public void removerJogador(String nomeJogador) {
         jogadores.remove(new Jogador(nomeJogador));
-        
+
     }
 
+    /**
+     * @deprecated utilizar métodos adicionarJogador e removerJogador
+     */
     @Deprecated
     public void definirJogadores(String[] nomes) {
         this.jogadores.clear();
@@ -80,10 +84,42 @@ public class Jogo {
         }
     }
 
+    public int getQuantJogadores() {
+        return jogadores.size();
+    }
+
+    public List<Jogador> getJogadores() {
+        return Collections.unmodifiableList(jogadores);
+    }
+
+    public String[][] getJogadoresComTotalDePontos() {
+        String[][] tmp = new String[getQuantJogadores()][2];
+        int i = 0;
+    
+        for (Jogador j : jogadores) {
+            tmp[i][0] = j.getNome();
+            tmp[i][1] = Integer.toString(j.getTotalDePontos());
+            i++;
+        }
+        return tmp;
+    }
+
+    public Jogador getJogadorAtual() {
+        return jogadores.get(jogadorAtual);
+    }
+
+    public Jogador getJogadorAnterior() {
+        return jogadores.get(jogadorAnterior);
+    }
+
+    public int getIntJogadorAtual() {
+        return jogadorAtual;
+    }
+
     public void iniciarJogo() {
-        if(getQuantJogadores() == 0)
+        if (getQuantJogadores() == 0)
             throw new InicioSemJogadoresException();
-            
+
         this.statusDoJogo = StatusDoJogo.EM_ANDAMENTO;
         for (Jogador j : jogadores) {
             j.getCartela().limpaCartela();
@@ -115,34 +151,6 @@ public class Jogo {
 
     public void setStatusDoJogo(StatusDoJogo statusDoJogo) {
         this.statusDoJogo = statusDoJogo;
-    }
-
-    public String[][] getJogadores() {
-        String[][] tmp = new String[getQuantJogadores()][2];
-        int i = 0;
-
-        for (Jogador j : jogadores) {
-            tmp[i][0] = j.getNome();
-            tmp[i][1] = Integer.toString(j.getTotalDePontos());
-            i++;
-        }
-        return tmp;
-    }
-
-    public Jogador getJogadorAtual() {
-        return jogadores.get(jogadorAtual);
-    }
-
-    public Jogador getJogadorAnterior() {
-        return jogadores.get(jogadorAnterior);
-    }
-
-    public int getIntJogadorAtual() {
-        return jogadorAtual;
-    }
-
-    public void setJogadores(ArrayList<Jogador> val) {
-        this.jogadores = val;
     }
 
     public void proximoJogador() {
@@ -248,8 +256,8 @@ public class Jogo {
         return novosRecordesGerados;
     }
 
-    public int getQuantJogadores() {
-        return jogadores.size();
+    public StatusDoJogo getStatus() {
+        return statusDoJogo;
     }
 
 }
