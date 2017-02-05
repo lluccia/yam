@@ -34,8 +34,6 @@ public class Jogada {
 
     private int pontosCombYam;
 
-    private int totalNosDados;
-
     private int seqJogada;
 
     private boolean combUm;
@@ -60,12 +58,24 @@ public class Jogada {
 
     private boolean combYam;
 
+    public static Jogada of(int dado0, int dado1, int dado2, int dado3, int dado4) {
+        Jogada jogada = new Jogada();
+        
+        jogada.dados = new ArrayList<>(5);
+        jogada.dados.add(0, new Dado(dado0));
+        jogada.dados.add(1, new Dado(dado1));
+        jogada.dados.add(2, new Dado(dado2));
+        jogada.dados.add(3, new Dado(dado3));
+        jogada.dados.add(4, new Dado(dado4));
+        
+        return jogada;
+    }
+
     public Jogada() {
         dados = new ArrayList<>(5);
         for (int i = 0; i < 5; i++) {
             dados.add(new Dado(i + 1));
         }
-        this.totalNosDados = 15;
         setSeqJogada(0);
     }
 
@@ -75,19 +85,16 @@ public class Jogada {
      */
     public boolean jogarDados() {
         // se todos os dados estiverem marcados, não efetua a jogada
-        int tmpTotalNosDados = 0;
         boolean todosMarcados = true;
         for (Dado dadoAtual : dados) {
             if (!dadoAtual.isMarcado()) {
                 todosMarcados = false;
             }
             dadoAtual.jogar();
-            tmpTotalNosDados += dadoAtual.getValor();
         }
         if (todosMarcados) {
             return false;
         } else {
-            setTotalNosDados(tmpTotalNosDados);
             setSeqJogada(getSeqJogada() + 1);
             ordenarDados();
             verificarCombinacoes();
@@ -372,11 +379,11 @@ public class Jogada {
     }
 
     public int getTotalNosDados() {
+        int totalNosDados = 0;
+        for (Dado dado: dados)
+            totalNosDados += dado.getValor();
+            
         return totalNosDados;
-    }
-
-    private void setTotalNosDados(int val) {
-        this.totalNosDados = val;
     }
 
     public int getSeqJogada() {
