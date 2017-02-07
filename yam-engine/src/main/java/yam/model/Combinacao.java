@@ -4,9 +4,16 @@ import yam.engine.Jogada;
 
 public abstract class Combinacao {
 
-    final Jogada jogada;
+    Jogada jogada;
     
+    public Combinacao() {
+    }
+
     public Combinacao(Jogada jogada) {
+        this.jogada = jogada;
+    }
+
+    public void setJogada(Jogada jogada) {
         this.jogada = jogada;
     }
 
