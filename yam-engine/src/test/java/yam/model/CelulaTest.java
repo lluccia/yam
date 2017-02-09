@@ -57,6 +57,18 @@ public class CelulaTest {
     }
     
     @Test
+    public void podeRiscarCombinacaoInvalida() {
+        celula.setCombinacao(combinacaoInvalida);
+        assertThat(celula.podeRiscar(), is(true));
+    }
+    
+    @Test
+    public void naoPodeRiscarCombinacaoValida() {
+        celula.setCombinacao(combinacaoValida);
+        assertThat(celula.podeRiscar(), is(false));
+    }
+    
+    @Test
     public void marcaPontosAtribuiValorDaCombinacaoSeValida() {
         celula.setCombinacao(combinacaoValida);
         celula.marcaPontos();
@@ -88,8 +100,16 @@ public class CelulaTest {
         assertThat(celula.podeMarcar(), is(false));
     }
     
-    @Test(expected=Celula.CelulaJaMarcadaException.class)
-    public void marcarCelulaMarcadaDeveLancarExcecao() {
+    @Test
+    public void naoPodeRiscarCelulaMarcada() {
+        celula.setCombinacao(combinacaoInvalida);
+        celula.marcaPontos();
+        
+        assertThat(celula.podeRiscar(), is(false));
+    }
+    
+    @Test(expected=Celula.CelulaIndisponivelException.class)
+    public void marcarCelulaCheiaDeveLancarExcecao() {
         celula.setCombinacao(combinacaoValida);
         celula.marcaPontos();
         celula.marcaPontos();
