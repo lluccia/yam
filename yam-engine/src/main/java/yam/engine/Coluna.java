@@ -4,17 +4,44 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-public class Coluna {
+import yam.model.ColunaAscendente;
+import yam.model.ColunaDescendente;
+import yam.model.ColunaDesordem;
+import yam.model.ColunaSeco;
 
-    private List<Linha> linhas;
+public abstract class Coluna {
 
-    private int minDePontos;
-    private int maxDePontos;
+    protected List<Linha> linhas;
+
+    protected int minDePontos;
+    protected int maxDePontos;
 
     private TipoDeColuna tipoDeColuna;
 
-    public Coluna(TipoDeColuna tipo) {
-        this.tipoDeColuna = tipo;
+    public TipoDeColuna getTipoDeColuna() {
+        return tipoDeColuna;
+    }
+
+    public void setTipoDeColuna(TipoDeColuna tipoDeColuna) {
+        this.tipoDeColuna = tipoDeColuna;
+    }
+
+    public static Coluna of(TipoDeColuna tipo) {
+        switch(tipo) {
+        case DESCE:
+            return new ColunaDescendente();
+        case SOBE:
+            return new ColunaAscendente();
+        case DESORDEM:
+            return new ColunaDesordem();
+        case SECO:
+            return new ColunaSeco();
+        default:
+            throw new IllegalArgumentException("Tipo de coluna inválido: " + tipo);
+        }
+    }
+    
+    protected Coluna() {
         this.linhas = new ArrayList<>();
         for (TipoDeLinha tipoDeLinha : EnumSet.allOf(TipoDeLinha.class)) {
             linhas.add(new Linha(tipoDeLinha));
@@ -73,127 +100,9 @@ public class Coluna {
      *            jogada que será utilizada para análise das marcações
      *            possíveis.
      */
-    public void verificarMarcacoes(Jogada jogada) {
-        limpaMarcacoes();
+    public abstract void verificarMarcacoes(Jogada jogada); 
 
-        switch (tipoDeColuna) {
-        case DESCE:
-            for (int i = 0; i <= 15; i++) {
-                if (i == 6) {
-                    i = 9;
-                }
-                if (linhas.get(i).getStatusDaLinha() == StatusDaLinha.LIVRE) {
-                    // verifica mínimo e máximo de pontos
-                    if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.MIN_DE_PONTOS) {
-                        linhas.get(i).setStatusDaLinha(StatusDaLinha.MARCAVEL);
-                    } else if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.MAX_DE_PONTOS) {
-                        if (jogada.getTotalNosDados() > minDePontos) {
-                            linhas.get(i).setStatusDaLinha(StatusDaLinha.MARCAVEL);
-                        } else {
-                            linhas.get(i).setStatusDaLinha(StatusDaLinha.RISCAVEL);
-                        }
-                    }
-                    // verifica outras combinações
-                    else if (jogada.verificaCombinacao(linhas.get(i).getTipoDeLinha())) {
-                        linhas.get(i).setStatusDaLinha(StatusDaLinha.MARCAVEL);
-                    } else {
-                        linhas.get(i).setStatusDaLinha(StatusDaLinha.RISCAVEL);
-                    }
-                    break;
-                }
-            }
-            break;
-        case SOBE:
-            for (int i = 15; i >= 0; i--) {
-                if (i == 8) {
-                    i = 5;
-                }
-                if (linhas.get(i).getStatusDaLinha() == StatusDaLinha.LIVRE) {
-                    // verifica mínimo e máximo de pontos
-                    if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.MAX_DE_PONTOS) {
-                        linhas.get(i).setStatusDaLinha(StatusDaLinha.MARCAVEL);
-                    } else if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.MIN_DE_PONTOS) {
-                        if (jogada.getTotalNosDados() < maxDePontos) {
-                            linhas.get(i).setStatusDaLinha(StatusDaLinha.MARCAVEL);
-                        } else {
-                            linhas.get(i).setStatusDaLinha(StatusDaLinha.RISCAVEL);
-                        }
-                    }
-                    // verifica outras combinações
-                    else if (jogada.verificaCombinacao(linhas.get(i).getTipoDeLinha())) {
-                        linhas.get(i).setStatusDaLinha(StatusDaLinha.MARCAVEL);
-                    } else {
-                        linhas.get(i).setStatusDaLinha(StatusDaLinha.RISCAVEL);
-                    }
-                    break;
-                }
-            }
-            break;
-        case DESORDEM:
-            for (int i = 0; i <= 15; i++) {
-                if (i == 6) {
-                    i = 9;
-                }
-                if (linhas.get(i).getStatusDaLinha() == StatusDaLinha.LIVRE) {
-                    // verifica mínimo e máximo de pontos
-                    if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.MIN_DE_PONTOS) {
-                        if (maxDePontos == 0 || jogada.getTotalNosDados() < maxDePontos) {
-                            linhas.get(i).setStatusDaLinha(StatusDaLinha.MARCAVEL);
-                        } else {
-                            linhas.get(i).setStatusDaLinha(StatusDaLinha.RISCAVEL);
-                        }
-                    } else if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.MAX_DE_PONTOS) {
-                        if (minDePontos == 0 || jogada.getTotalNosDados() > minDePontos) {
-                            linhas.get(i).setStatusDaLinha(StatusDaLinha.MARCAVEL);
-                        } else {
-                            linhas.get(i).setStatusDaLinha(StatusDaLinha.RISCAVEL);
-                        }
-                    }
-                    // verifica outras combinações
-                    else if (jogada.verificaCombinacao(linhas.get(i).getTipoDeLinha())) {
-                        linhas.get(i).setStatusDaLinha(StatusDaLinha.MARCAVEL);
-                    } else {
-                        linhas.get(i).setStatusDaLinha(StatusDaLinha.RISCAVEL);
-                    }
-                }
-            }
-            break;
-        case SECO:
-            for (int i = 0; i <= 15; i++) {
-                if (i == 6) {
-                    i = 9;
-                }
-                if (linhas.get(i).getStatusDaLinha() == StatusDaLinha.LIVRE) {
-                    // verifica mínimo e máximo de pontos
-                    if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.MIN_DE_PONTOS) {
-                        if (jogada.getSeqJogada() == 1
-                                && (maxDePontos == 0 || jogada.getTotalNosDados() < maxDePontos)) {
-                            linhas.get(i).setStatusDaLinha(StatusDaLinha.MARCAVEL);
-                        } else {
-                            linhas.get(i).setStatusDaLinha(StatusDaLinha.RISCAVEL);
-                        }
-                    } else if (linhas.get(i).getTipoDeLinha() == TipoDeLinha.MAX_DE_PONTOS) {
-                        if (jogada.getSeqJogada() == 1
-                                && (minDePontos == 0 || jogada.getTotalNosDados() > minDePontos)) {
-                            linhas.get(i).setStatusDaLinha(StatusDaLinha.MARCAVEL);
-                        } else {
-                            linhas.get(i).setStatusDaLinha(StatusDaLinha.RISCAVEL);
-                        }
-                    }
-                    // verifica outras combinações
-                    else if (jogada.getSeqJogada() == 1 && jogada.verificaCombinacao(linhas.get(i).getTipoDeLinha())) {
-                        linhas.get(i).setStatusDaLinha(StatusDaLinha.MARCAVEL);
-                    } else {
-                        linhas.get(i).setStatusDaLinha(StatusDaLinha.RISCAVEL);
-                    }
-                }
-            }
-            break;
-        }
-    }
-
-
-    private void limpaMarcacoes() {
+    protected void limpaMarcacoes() {
         for (Linha linha : linhas) {
             linha.limpaMarcacao();
         }

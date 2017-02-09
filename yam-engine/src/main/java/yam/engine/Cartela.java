@@ -1,37 +1,32 @@
 package yam.engine;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Cartela {
 
     private List<Coluna> colunas;
 
-    private int totalDePontos;
-
     public Cartela() {
         this.colunas = new ArrayList<>();
-        this.colunas.add(new Coluna(TipoDeColuna.DESCE));
-        this.colunas.add(new Coluna(TipoDeColuna.SOBE));
-        this.colunas.add(new Coluna(TipoDeColuna.DESORDEM));
-        this.colunas.add(new Coluna(TipoDeColuna.SECO));
-        this.setTotalDePontos(0);
+        this.colunas.add(Coluna.of(TipoDeColuna.DESCE));
+        this.colunas.add(Coluna.of(TipoDeColuna.SOBE));
+        this.colunas.add(Coluna.of(TipoDeColuna.DESORDEM));
+        this.colunas.add(Coluna.of(TipoDeColuna.SECO));
     }
 
     public List<Coluna> getColunas() {
-        return colunas;
-    }
-
-    public void setColunas(List<Coluna> val) {
-        this.colunas = val;
+        return Collections.unmodifiableList(colunas);
     }
 
     public int getTotalDePontos() {
-        return totalDePontos;
-    }
+        int totalDePontos = 0;
 
-    public void setTotalDePontos(int totalDePontos) {
-        this.totalDePontos = totalDePontos;
+        for (TipoDeColuna col : TipoDeColuna.values())
+            totalDePontos += getPontos(col, TipoDeLinha.SEGUNDO_E_TERCEIRO_TOTAIS);
+
+        return totalDePontos;
     }
 
     public int getPontos(TipoDeColuna coluna, TipoDeLinha linha) {
@@ -42,27 +37,8 @@ public class Cartela {
         return colunas.get(coluna.ordinal()).getStatus(linha);
     }
 
-    public void setPontos(TipoDeColuna coluna, TipoDeLinha linha, int pontos) {
-        this.colunas.get(coluna.ordinal()).setPontos(linha, pontos);
-    }
-
     public boolean marcaPontos(TipoDeColuna coluna, TipoDeLinha linha, Jogada jog) {
-        if (colunas.get(coluna.ordinal()).marcaPontos(linha, jog)) {
-            sumarizaTotais();
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public void sumarizaTotais() {
-        int temp = 0;
-
-        for (TipoDeColuna col : TipoDeColuna.values()) {
-            temp += getPontos(col, TipoDeLinha.SEGUNDO_E_TERCEIRO_TOTAIS);
-        }
-
-        this.setTotalDePontos(temp);
+        return colunas.get(coluna.ordinal()).marcaPontos(linha, jog);
     }
 
     public boolean cartelaCheia() {
@@ -101,7 +77,6 @@ public class Cartela {
     public void limpaCartela() {
         limpaPontos();
         limpaStatus();
-        this.setTotalDePontos(0);
     }
 
     public int[][] getArrPontos() {
@@ -132,7 +107,7 @@ public class Cartela {
                 }
             }
         }
-        if (totalDePontos > 0) {
+        if (getTotalDePontos() > 0) {
             retArray[2][18] = StatusDaLinha.MARCADA;
         }
         return retArray;
