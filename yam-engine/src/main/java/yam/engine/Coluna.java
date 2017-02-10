@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import yam.model.Celula;
 import yam.model.ColunaAscendente;
 import yam.model.ColunaDescendente;
 import yam.model.ColunaDesordem;
@@ -11,20 +12,24 @@ import yam.model.ColunaSeco;
 
 public abstract class Coluna {
 
+    @Deprecated
     protected List<Linha> linhas;
+    
+    protected List<Celula> celulasSuperiores;
 
+    protected int primeiroTotal;
+    protected int bonus;
+    protected int segundoTotal;
+    
+    protected List<Celula> celulasInferiores;
+    
+    protected int terceiroTotal;
+    protected int segundoETerceiroTotais;
+    
+    @Deprecated
     protected int minDePontos;
+    @Deprecated
     protected int maxDePontos;
-
-    private TipoDeColuna tipoDeColuna;
-
-    public TipoDeColuna getTipoDeColuna() {
-        return tipoDeColuna;
-    }
-
-    public void setTipoDeColuna(TipoDeColuna tipoDeColuna) {
-        this.tipoDeColuna = tipoDeColuna;
-    }
 
     public static Coluna of(TipoDeColuna tipo) {
         switch(tipo) {

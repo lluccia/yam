@@ -34,7 +34,6 @@ public class Jogo {
 
     private boolean podeMarcarDados;
 
-    private boolean podeMarcarPontos;
 
     private int jogadorAtual = 0;
     private int jogadorAnterior = 0;
@@ -51,7 +50,6 @@ public class Jogo {
         this.jogada = new Jogada();
         this.podeJogarDados = false;
         this.podeMarcarDados = false;
-        this.podeMarcarPontos = false;
         this.novosRecordesGerados = false;
 
         recordes = new Recordes();
@@ -165,7 +163,6 @@ public class Jogo {
         if (jogada.jogarDados()) {
             getJogadorAtual().getCartela().verificarMarcacoes(jogada);
             if (jogada.getSeqJogada() > 0 && jogada.getSeqJogada() < 3) {
-                podeMarcarPontos = true;
                 podeMarcarDados = true;
             } else {
                 podeJogarDados = false;
@@ -180,7 +177,6 @@ public class Jogo {
             jogada.zeraSeqJogada();
             podeJogarDados = true;
             podeMarcarDados = false;
-            podeMarcarPontos = false;
             getJogadorAtual().getCartela().limpaStatus();
 
             if (ultimoJogador && getJogadorAtual().getCartela().cartelaCheia()) {

@@ -8,6 +8,8 @@ public class Jogada {
 
     private List<Dado> dados;
 
+    private int lancamentos;
+
     private int pontosCombUm;
 
     private int pontosCombDois;
@@ -33,8 +35,6 @@ public class Jogada {
     private int pontosCombMaxDePontos;
 
     private int pontosCombYam;
-
-    private int seqJogada;
 
     private boolean combUm;
 
@@ -68,6 +68,9 @@ public class Jogada {
         jogada.dados.add(3, new Dado(dado3));
         jogada.dados.add(4, new Dado(dado4));
         
+        jogada.verificarCombinacoes();
+        jogada.lancamentos = 1;
+
         return jogada;
     }
 
@@ -76,7 +79,11 @@ public class Jogada {
         for (int i = 0; i < 5; i++) {
             dados.add(new Dado(i + 1));
         }
-        setSeqJogada(0);
+        lancamentos = 0;
+    }
+    
+    public int getSeqJogada() {
+        return lancamentos;
     }
 
     /**
@@ -84,22 +91,26 @@ public class Jogada {
      * efetiva a jogada.
      */
     public boolean jogarDados() {
-        // se todos os dados estiverem marcados, não efetua a jogada
-        boolean todosMarcados = true;
+        if (todosDadosSegurados())
+            return false;
+
+        lancamentos += 1;
+
+        ordenarDados();
+        verificarCombinacoes();
+        
+        return true;
+    }
+
+    private boolean todosDadosSegurados() {
+        boolean todosSegurados = true;
         for (Dado dadoAtual : dados) {
             if (!dadoAtual.isMarcado()) {
-                todosMarcados = false;
+                todosSegurados = false;
             }
             dadoAtual.jogar();
         }
-        if (todosMarcados) {
-            return false;
-        } else {
-            setSeqJogada(getSeqJogada() + 1);
-            ordenarDados();
-            verificarCombinacoes();
-            return true;
-        }
+        return todosSegurados;
     }
 
     void desmarcarDados() {
@@ -284,7 +295,7 @@ public class Jogada {
      * Zera o número sequencial da jogada.
      */
     public void zeraSeqJogada() {
-        this.setSeqJogada(0);
+        lancamentos = 0;
         for (Dado d : dados) {
             d.desmarcar();
         }
@@ -384,14 +395,6 @@ public class Jogada {
             totalNosDados += dado.getValor();
             
         return totalNosDados;
-    }
-
-    public int getSeqJogada() {
-        return seqJogada;
-    }
-
-    private void setSeqJogada(int seqJogada) {
-        this.seqJogada = seqJogada;
     }
 
     public int getPontosCombCinco() {
@@ -552,15 +555,6 @@ public class Jogada {
 
     public List<Dado> getDado() {
         return dados;
-    }
-
-    public String getJogada() {
-        String retString = "";
-        for (Dado d : dados) {
-            retString = retString.concat(Integer.toString(d.getValor()));
-            retString = retString.concat(" ");
-        }
-        return retString;
     }
 
     public boolean verificaCombinacao(TipoDeLinha tpLinha) {
